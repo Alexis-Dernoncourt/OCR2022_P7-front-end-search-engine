@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Les petits plats</title>
+
+    <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="d-flex align-items-center justify-content-center py-4">
+      <a href="/" title="Aller sur la page d'accueil" class="d-flex justify-content-center">
+        <img src="assets/images/logo.png" class="img-fluid w-50" alt="Les Petits Plats - Accueil" />
+      </a>
+    </header>
+
+    <main class="container-xl container-fluid-lg">
+      <div class="input-group mb-3">
+        <label for="searchFormControlInput" class="form-label visually-hidden">Rechercher</label>
+        <input
+          type="search"
+          class="rounded form-control form-control-lg main-search-input"
+          id="searchFormControlInput"
+          placeholder="Entrez votre recherche..."
+        />
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+          />
+        </svg>
+      </div>
+    </main>
+
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="assets/js/index.js"></script>
+    <script type="module" src="assets/js/index-test.js"></script>
+  </body>
+</html>

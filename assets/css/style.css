@@ -1,0 +1,11 @@
+.main-search-input {
+  position: relative;
+  background: rgb(245, 245, 245);
+}
+
+.bi-search {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  translate: 0 -50%;
+}
