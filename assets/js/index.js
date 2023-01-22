@@ -1,3 +1,3 @@
-import { logToTest } from './index-test.js';
+import { addInputIntoFilterOnOpen } from './index-test.js';
 
-logToTest();
+addInputIntoFilterOnOpen();

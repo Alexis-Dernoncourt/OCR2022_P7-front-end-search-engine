@@ -18,20 +18,270 @@
     </header>
 
     <main class="container-xl container-fluid-lg">
-      <div class="input-group mb-3">
-        <label for="searchFormControlInput" class="form-label visually-hidden">Rechercher</label>
-        <input
-          type="search"
-          class="rounded form-control form-control-lg main-search-input"
-          id="searchFormControlInput"
-          placeholder="Entrez votre recherche..."
-        />
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-          <path
-            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+      <section>
+        <h1 class="visually-hidden">Rechercher une recette</h1>
+        <div class="input-group mb-3">
+          <label for="searchFormControlInput" class="form-label visually-hidden">Rechercher</label>
+          <input
+            type="search"
+            class="rounded form-control form-control-lg main-search-input"
+            id="searchFormControlInput"
+            placeholder="Entrez votre recherche..."
           />
-        </svg>
-      </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+            />
+          </svg>
+        </div>
+        <div class="row">
+          <div class="col-auto">
+            <div class="accordion" id="accordion1">
+              <div class="accordion-item text-white bg-primary">
+                <h2 class="accordion-header" id="heading-accordion1">
+                  <button
+                    id="btn-accordion1"
+                    class="accordion-button collapsed text-white fw-semibold bg-primary"
+                    type="button"
+                    style="gap: 30px"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse-accordion1"
+                    aria-expanded="false"
+                    aria-controls="collapse-accordion1"
+                  >
+                    Ingrédients
+                  </button>
+                  <div id="accordion1-input-container" class="d-flex d-none">
+                    <div class="input-group search-accordion1">
+                      <label for="search-accordion1" class="form-label visually-hidden">Filtrer une recette par ingrédients</label>
+                      <input
+                        type="search"
+                        style="flex: auto"
+                        class="rounded form-control form-control-lg accordion1-search-input bg-transparent border-0 text-light"
+                        id="search-accordion1"
+                        placeholder="Entrez votre recherche..."
+                      />
+                    </div>
+                    <button
+                      id="btn-accordion1"
+                      class="accordion-button collapsed text-white fw-semibold bg-primary"
+                      type="button"
+                      style="gap: 30px; flex: 1"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapse-accordion1"
+                      aria-expanded="false"
+                      aria-controls="collapse-accordion1"
+                    ></button>
+                  </div>
+                </h2>
+                <div id="collapse-accordion1" class="accordion-collapse collapse" aria-labelledby="heading-accordion1" data-bs-parent="#accordion1">
+                  <!--
+                  <div>
+                    <input type="text" class="rounded outline form-control form-control-lg ingredient-search-filter" />
+                  </div>
+                  -->
+                  <div class="accordion-body">
+                    <p>This is the first item's accordion body</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="accordion" id="accordion2">
+              <div class="accordion-item text-white bg-success">
+                <h2 class="accordion-header" id="heading-accordion2">
+                  <button
+                    id="btn-accordion2"
+                    class="accordion-button collapsed text-white fw-semibold bg-success"
+                    type="button"
+                    style="gap: 30px"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse-accordion2"
+                    aria-expanded="false"
+                    aria-controls="collapse-accordion2"
+                  >
+                    Appareils
+                  </button>
+                  <div id="accordion2-input-container" class="d-flex d-none">
+                    <div class="input-group search-accordion2">
+                      <label for="search-accordion2" class="form-label visually-hidden">Filtrer une recette par appareils</label>
+                      <input
+                        type="search"
+                        style="flex: auto"
+                        class="rounded form-control form-control-lg accordion2-search-input bg-transparent border-0 text-light"
+                        id="search-accordion2"
+                        placeholder="Entrez votre recherche..."
+                      />
+                    </div>
+                    <button
+                      id="btn-accordion2"
+                      class="accordion-button collapsed text-white fw-semibold bg-success"
+                      type="button"
+                      style="gap: 30px; flex: 1"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapse-accordion2"
+                      aria-expanded="false"
+                      aria-controls="collapse-accordion2"
+                    ></button>
+                  </div>
+                </h2>
+                <div id="collapse-accordion2" class="accordion-collapse collapse" aria-labelledby="heading-accordion2" data-bs-parent="#accordion2">
+                  <div class="accordion-body">
+                    <p>This is the second item's accordion body</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="accordion" id="accordion3">
+              <div class="accordion-item text-white bg-danger">
+                <h2 class="accordion-header" id="heading-accordion3">
+                  <button
+                    id="btn-accordion3"
+                    class="accordion-button collapsed text-white fw-semibold bg-danger"
+                    type="button"
+                    style="gap: 30px"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse-accordion3"
+                    aria-expanded="false"
+                    aria-controls="collapse-accordion3"
+                  >
+                    Ustensiles
+                  </button>
+                  <div id="accordion3-input-container" class="d-flex d-none">
+                    <div class="input-group search-accordion3">
+                      <label for="search-accordion3" class="form-label visually-hidden">Filtrer une recette par ustensiles</label>
+                      <input
+                        type="search"
+                        style="flex: auto"
+                        class="rounded form-control form-control-lg accordion3-search-input bg-transparent border-0 text-light"
+                        id="search-accordion3"
+                        placeholder="Entrez votre recherche..."
+                      />
+                    </div>
+                    <button
+                      id="btn-accordion3"
+                      class="accordion-button collapsed text-white fw-semibold bg-danger"
+                      type="button"
+                      style="gap: 30px; flex: 1"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapse-accordion3"
+                      aria-expanded="false"
+                      aria-controls="collapse-accordion3"
+                    ></button>
+                  </div>
+                </h2>
+                <div id="collapse-accordion3" class="accordion-collapse collapse" aria-labelledby="heading-accordion3" data-bs-parent="#accordion3">
+                  <div class="accordion-body">
+                    <p>This is the third item's accordion body</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h1 class="visually-hidden">Résultats de la recherche</h1>
+        <div class="container search-content my-5">
+          <div class="row row-cols-md-3">
+            <div class="col-md my-3 my-md-0">
+              <a href="#" class="text-decoration-none text-dark">
+                <div class="card">
+                  <img src="https://via.placeholder.com/380x180.jpg" class="card-img-top" alt="..." />
+                  <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center justify-content-between fs-5 mb-3">
+                      Card title
+                      <span class="fw-bold d-flex align-items-center recipe-time">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="clock-icon" viewBox="0 0 16 16">
+                          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                        </svg>
+                        10 min
+                      </span>
+                    </h5>
+                    <div class="d-flex align-items-start justify-content-between gap-3 recipe-content-container">
+                      <div class="d-flex flex-column w-50 ingredients-container">
+                        <div class="card-text"><span class="fw-semibold">Thon rouge (ou blanc) :</span> 200g</div>
+                        <div class="card-text"><span class="fw-semibold">Concombre :</span> 1</div>
+                        <div class="card-text"><span class="fw-semibold">Tomate :</span> 2</div>
+                        <div class="card-text"><span class="fw-semibold">Carotte :</span> 1</div>
+                        <div class="card-text"><span class="fw-semibold">Citron vert :</span> 5</div>
+                        <div class="card-text"><span class="fw-semibold">Lait de coco :</span> 100ml</div>
+                      </div>
+                      <div class="card-text w-50">Some quick example text to build on the card title and make up the bulk of the card's content.</div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-md my-3 my-md-0">
+              <a href="#" class="text-decoration-none text-dark">
+                <div class="card">
+                  <img src="https://via.placeholder.com/380x180.jpg" class="card-img-top" alt="..." />
+                  <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center justify-content-between fs-5 mb-3">
+                      Card title
+                      <span class="fw-bold d-flex align-items-center recipe-time">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="clock-icon" viewBox="0 0 16 16">
+                          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                        </svg>
+                        10 min
+                      </span>
+                    </h5>
+                    <div class="d-flex align-items-start justify-content-between gap-3 recipe-content-container">
+                      <div class="d-flex flex-column w-50 ingredients-container">
+                        <div class="card-text"><span class="fw-semibold">Thon rouge (ou blanc) :</span> 200g</div>
+                        <div class="card-text"><span class="fw-semibold">Concombre :</span> 1</div>
+                        <div class="card-text"><span class="fw-semibold">Tomate :</span> 2</div>
+                        <div class="card-text"><span class="fw-semibold">Carotte :</span> 1</div>
+                        <div class="card-text"><span class="fw-semibold">Citron vert :</span> 5</div>
+                        <div class="card-text"><span class="fw-semibold">Lait de coco :</span> 100ml</div>
+                      </div>
+                      <div class="card-text w-50">Some quick example text to build on the card title and make up the bulk of the card's content.</div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-md my-3 my-md-0">
+              <a href="#" class="text-decoration-none text-dark">
+                <div class="card">
+                  <img src="https://via.placeholder.com/380x180.jpg" class="card-img-top" alt="..." />
+                  <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center justify-content-between fs-5 mb-3">
+                      Card title
+                      <span class="fw-bold d-flex align-items-center recipe-time">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="clock-icon" viewBox="0 0 16 16">
+                          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                        </svg>
+                        10 min
+                      </span>
+                    </h5>
+                    <div class="d-flex align-items-start justify-content-between gap-3 recipe-content-container">
+                      <div class="d-flex flex-column w-50 ingredients-container">
+                        <div class="card-text"><span class="fw-semibold">Thon rouge (ou blanc) :</span> 200g</div>
+                        <div class="card-text"><span class="fw-semibold">Concombre :</span> 1</div>
+                        <div class="card-text"><span class="fw-semibold">Tomate :</span> 2</div>
+                        <div class="card-text"><span class="fw-semibold">Carotte :</span> 1</div>
+                        <div class="card-text"><span class="fw-semibold">Citron vert :</span> 5</div>
+                        <div class="card-text"><span class="fw-semibold">Lait de coco :</span> 100ml</div>
+                      </div>
+                      <div class="card-text w-50">Some quick example text to build on the card title and make up the bulk of the card's content.</div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
