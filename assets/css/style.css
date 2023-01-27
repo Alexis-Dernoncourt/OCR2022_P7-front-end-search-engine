@@ -12,6 +12,10 @@
 
 /* -----> END - Bootstrap override rules ----*/
 
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 .main-search-input,
 .accordion1-search-input {
   position: relative;
