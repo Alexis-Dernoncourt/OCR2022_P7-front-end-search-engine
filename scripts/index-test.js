@@ -51,6 +51,14 @@ function filterRecipesByIngredients() {
   return ingredientsMap;
 }
 
+function filterRecipesByAppliances() {
+  let appliancesMap = new Map();
+  recipes.forEach((e) => {
+    appliancesMap.set(e.appliance, e.appliance);
+  });
+  return appliancesMap;
+}
+
 export function getDataForIngredientsFilter() {
   const container = document.querySelector('.ingredients-items-body');
   const ingredientsData = filterRecipesByIngredients();
@@ -62,6 +70,21 @@ export function getDataForIngredientsFilter() {
       <p class="ingredient-element" data-ingredient="${ingredient}">${ingredient}</p>
     `;
     pElement.append(ingredient);
+    container.innerHTML += dom;
+  });
+}
+
+export function getDataForAppliancesFilter() {
+  const container = document.querySelector('.appliances-items-body');
+  const pElement = document.createElement('p');
+  const appliancesData = filterRecipesByAppliances();
+  const appliancesArray = Array.from(appliancesData.values());
+  const sortedAppliances = appliancesArray.sort(Intl.Collator().compare);
+  sortedAppliances.forEach((appliance) => {
+    const dom = `
+      <p class="appliance-element" data-appliance="${appliance}">${appliance}</p>
+    `;
+    pElement.append(appliance);
     container.innerHTML += dom;
   });
 }
