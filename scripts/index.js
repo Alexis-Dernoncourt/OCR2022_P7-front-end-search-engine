@@ -1,3 +1,4 @@
-import { addInputIntoFilterOnOpen } from './index-test.js';
+import { addInputIntoFilterOnOpen, getDataForIngredientsFilter } from './index-test.js';
 
 addInputIntoFilterOnOpen();
+getDataForIngredientsFilter();
