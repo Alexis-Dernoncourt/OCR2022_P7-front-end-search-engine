@@ -78,9 +78,54 @@ body {
 }
 
 .ingredient-element,
-.appliance-element {
-  padding-right: 40px;
+.appliance-element,
+.ustensils-element {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
   max-width: 200px;
+  font-size: 0.9rem;
   line-height: 1rem;
   cursor: pointer;
+}
+
+.closefilter {
+  cursor: pointer;
+}
+
+@media screen and (min-width: 320px) and (max-width: 420px) {
+  .accordion-body {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: max-content;
+  }
+
+  .ingredient-element,
+  .appliance-element,
+  .ustensils-element {
+    font-size: 0.8rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+
+@media screen and (min-width: 590px) {
+  .accordion-body {
+    grid-auto-rows: 50px;
+  }
+
+  .ingredient-element,
+  .appliance-element,
+  .ustensils-element {
+    padding-right: 40px;
+    line-height: 1.3rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .ingredient-element,
+  .appliance-element,
+  .ustensils-element {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
 }

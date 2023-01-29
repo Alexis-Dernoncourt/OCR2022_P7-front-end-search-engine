@@ -34,6 +34,7 @@
             />
           </svg>
         </div>
+        <div id="badges-filter-items-container" class="d-flex flex-wrap gap-2 col-auto my-3"></div>
         <div class="row">
           <div class="col-auto">
             <div class="accordion" id="accordion1">
@@ -165,9 +166,7 @@
                   </div>
                 </h2>
                 <div id="collapse-accordion3" class="accordion-collapse collapse" aria-labelledby="heading-accordion3" data-bs-parent="#accordion3">
-                  <div class="accordion-body">
-                    <p>This is the third item's accordion body</p>
-                  </div>
+                  <div class="accordion-body ustensils-items-body"></div>
                 </div>
               </div>
             </div>
@@ -277,7 +276,8 @@
 
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="data/recipes.js"></script>
+    <script type="module" src="scripts/utils.js"></script>
     <script type="module" src="scripts/index.js"></script>
-    <script type="module" src="scripts/index-test.js"></script>
+    <script type="module" src="scripts/filters.js"></script>
   </body>
 </html>

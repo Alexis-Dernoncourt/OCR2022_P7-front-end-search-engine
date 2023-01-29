@@ -1,5 +1,15 @@
-import { addInputIntoFilterOnOpen, getDataForIngredientsFilter, getDataForAppliancesFilter } from './index-test.js';
+import {
+  addInputIntoFilterOnOpen,
+  getDataForIngredientsFilter,
+  getDataForAppliancesFilter,
+  getDataForUstensilsFilter,
+  handleClickOnFilterElement,
+  sortFilterElementsOnSearchInput,
+} from './filters.js';
 
 addInputIntoFilterOnOpen();
 getDataForIngredientsFilter();
 getDataForAppliancesFilter();
+getDataForUstensilsFilter();
+handleClickOnFilterElement();
+sortFilterElementsOnSearchInput();
