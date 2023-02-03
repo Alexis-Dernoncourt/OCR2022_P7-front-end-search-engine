@@ -158,18 +158,20 @@ export function handleClickOnFilterElement() {
 function handleClickUtilityFunction(element, target) {
   target.forEach((e) =>
     e.addEventListener('click', (e) => {
-      addDomElementOnFilterSelected(e.target.dataset[`${element}`]);
+      const classlistOfElement = e.target.parentElement.parentElement.parentElement.classList;
+      const classOfElement = classlistOfElement[classlistOfElement.length - 1];
+      addDomElementOnFilterSelected(e.target.dataset[`${element}`], classOfElement);
     })
   );
 }
 
-function addDomElementOnFilterSelected(element) {
+function addDomElementOnFilterSelected(element, classOfElement) {
   const filterItemsContainer = document.querySelector('#badges-filter-items-container');
   const elementWithComas = element.toLowerCase().split(' ').join('-');
   const filterItems = document.querySelectorAll('.badge');
 
   const dom = `
-  <span data-item='${elementWithComas}' class='badge py-2 d-inline-flex align-items-center justify-content-evenly text-bg-primary'>
+  <span data-item='${elementWithComas}' class='badge py-2 d-inline-flex align-items-center justify-content-evenly text-${classOfElement}'>
     ${element}
     <span class='ps-2 closefilter close-${elementWithComas}'>
       <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='close-${elementWithComas}' viewBox='0 0 16 16'>
