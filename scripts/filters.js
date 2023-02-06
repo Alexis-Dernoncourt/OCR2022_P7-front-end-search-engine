@@ -27,31 +27,33 @@ export function addInputIntoFilterOnOpen() {
 }
 
 // TODO: refactor functions below (duplication)
-function makeIngredientsArray() {
+function makeIngredientsMap() {
   const ingredientsMap = new Map();
   recipes.forEach((e) => {
     e.ingredients.forEach((el) => {
       const lowerCaseElement = el.ingredient.toLowerCase();
-      ingredientsMap.set(capitalizeText(lowerCaseElement), capitalizeText(lowerCaseElement));
+      ingredientsMap.set({ id: e.id }, { ingredient: capitalizeText(lowerCaseElement) });
     });
   });
-  return Array.from(ingredientsMap.values());
+  return ingredientsMap;
 }
 
-function sanitizeIngredientsArray() {
+export function sanitizeIngredientsMap() {
   const ingredientsMap = new Map();
-  const arrayOfRecipes = makeIngredientsArray();
+  const mapOfRecipes = makeIngredientsMap();
+  const arrayOfRecipes = Array.from(mapOfRecipes.entries());
+  const arrayOfIngredients = Array.from(mapOfRecipes.values()).map((e) => e.ingredient);
   arrayOfRecipes.forEach((e) => {
-    const elementLength = e.length;
-    const lastChar = e.charAt(elementLength - 1);
-    const elementWithoutPlurality = e.substring(0, elementLength - 1);
-    if (lastChar === 's' && arrayOfRecipes.includes(elementWithoutPlurality)) {
+    const elementLength = e[1].ingredient.length;
+    const lastChar = e[1].ingredient.charAt(elementLength - 1);
+    const elementWithoutPlurality = e[1].ingredient.substring(0, elementLength - 1);
+    if (lastChar === 's' && arrayOfIngredients.includes(elementWithoutPlurality)) {
       return;
     } else {
-      ingredientsMap.set(capitalizeText(e), capitalizeText(e));
+      ingredientsMap.set({ id: e[0].id }, { ingredient: capitalizeText(e[1].ingredient) });
     }
   });
-  return Array.from(ingredientsMap.values());
+  return ingredientsMap;
 }
 
 function makeAppliancesArray() {
@@ -74,12 +76,22 @@ function makeUstensilsArray() {
 }
 
 function filterRecipesByIngredients(searchFilter) {
-  const arrayOfIngredients = sanitizeIngredientsArray();
+  const mapOfIngredientsSanitized = sanitizeIngredientsMap();
+  const arrayOfIngredients = Array.from(mapOfIngredientsSanitized.values()).map((e) => e.ingredient);
+  const filterIngredients = new Map();
+  const searchIngredient = new Map();
   if (searchFilter && searchFilter.length >= 3) {
-    const filteredArray = arrayOfIngredients.filter((e) => e.toLowerCase().includes(searchFilter.toLowerCase()));
-    return filteredArray.sort(Intl.Collator().compare);
+    arrayOfIngredients.forEach((e) => {
+      if (e.toLowerCase().includes(searchFilter.toLowerCase())) {
+        searchIngredient.set(e, e);
+      }
+    });
+    return Array.from(searchIngredient.values()).sort(Intl.Collator().compare);
   } else {
-    return arrayOfIngredients.sort(Intl.Collator().compare);
+    arrayOfIngredients.forEach((el) => {
+      filterIngredients.set(el, el);
+    });
+    return Array.from(filterIngredients.values()).sort(Intl.Collator().compare);
   }
 }
 
