@@ -44,8 +44,13 @@ body {
   font-weight: 700 !important;
 }
 
+.card-title {
+  min-height: 50px;
+}
+
 .recipe-time {
   line-height: 24px;
+  white-space: nowrap;
 }
 
 .clock-icon {
@@ -93,6 +98,26 @@ body {
   cursor: pointer;
 }
 
+.card-item-flex {
+  padding: 0;
+  flex: 0 0 auto;
+}
+
+.card-item-container {
+  height: 15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-text-custom {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+}
+
 @media screen and (min-width: 320px) and (max-width: 420px) {
   .accordion-body {
     grid-template-columns: repeat(2, 1fr);
@@ -127,5 +152,15 @@ body {
   .ustensils-element {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+
+  .card-item-flex {
+    flex: 1 0 auto;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .card-item-flex {
+    flex: 0 0 32%;
   }
 }

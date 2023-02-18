@@ -28,8 +28,7 @@ export const recipes = [
       },
     ],
     time: 10,
-    description:
-      "Mettre les glaçons à votre goût dans le blender, ajouter le lait, la crème de coco, le jus de 2 citrons et le sucre. Mixer jusqu'à avoir la consistence désirée",
+    description: "Mettre les glaçons à votre goût dans le blender, ajouter le lait, la crème de coco, le jus de 2 citrons et le sucre. Mixer jusqu'à avoir la consistence désirée",
     appliance: 'Blender',
     ustensils: ['cuillère à Soupe', 'verres', 'presse citron'],
   },
@@ -260,7 +259,7 @@ export const recipes = [
     ],
     time: 50,
     description:
-      "Étaler la pate dans les moules à tartelette. Faire cuire la pate 30 minutes. Découper le chocolat en morceau et le faire chauffer, y ajouter la crème liquide, ajouter le beurre et remuer jusqu'à avoir une pâte homogène. Verser la pate sur les tartelettes. Couper les fraises en 2 et les positionner sur ",
+      "Étaler la pate dans les moules à tartelette. Faire cuire la pate 30 minutes. Découper le chocolat en morceau et le faire chauffer, y ajouter la crème liquide, ajouter le beurre et remuer jusqu'à avoir une pâte homogène. Verser la pate sur les tartelettes. Couper les fraises en 2 et les positionner sur le dessus.",
     appliance: 'Four',
     ustensils: ['moule à tartelettes (6)', 'casserole'],
   },
@@ -685,8 +684,7 @@ export const recipes = [
       },
     ],
     time: 0,
-    description:
-      "Coupez les fruits en morceaux, ajouter le jus de citron et le lait ainsi que le sucre glace. Mixez. Ajoutez des glaçons si le lait n'a pas été mis au frais.",
+    description: "Coupez les fruits en morceaux, ajouter le jus de citron et le lait ainsi que le sucre glace. Mixez. Ajoutez des glaçons si le lait n'a pas été mis au frais.",
     appliance: 'Blender',
     ustensils: ['couteau', 'verres', 'presse citron'],
   },
@@ -1051,8 +1049,7 @@ export const recipes = [
       },
     ],
     time: 30,
-    description:
-      "Prendre les pois chiches, les mettre dans le mixer avec de l'huile d'olive, ajouter le jus des 2 citrons et du paprika selon le gout.",
+    description: "Prendre les pois chiches, les mettre dans le mixer avec de l'huile d'olive, ajouter le jus des 2 citrons et du paprika selon le gout.",
     appliance: 'Mixer',
     ustensils: ['cuillère en bois', 'presse citron'],
   },
@@ -1662,8 +1659,7 @@ export const recipes = [
       },
     ],
     time: 5,
-    description:
-      'Mélanger le jus de citron avec le sucre et la mascarpone. Ajouter la crème fraîche. Mélanger le tout et mettre au congélateur pendant 1 heure. Servir',
+    description: 'Mélanger le jus de citron avec le sucre et la mascarpone. Ajouter la crème fraîche. Mélanger le tout et mettre au congélateur pendant 1 heure. Servir',
     appliance: 'Saladier',
     ustensils: ['fouet', 'verres', 'cuillère en bois'],
   },
