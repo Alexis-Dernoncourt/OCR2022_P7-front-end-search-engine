@@ -5,13 +5,49 @@ import {
   getDataForUstensilsFilter,
   handleClickOnFilterElement,
   sortFilterElementsOnSearchInput,
+  findRecipesForTagSearch,
 } from './filters.js';
-import { getIdOfRecipesSearch } from './recipes-search.js';
+import { getIdOfRecipesSearchUtils, getModalDomOfRecipeDetails } from './recipes-search.js';
 
-addInputIntoFilterOnOpen();
 getDataForIngredientsFilter();
 getDataForAppliancesFilter();
 getDataForUstensilsFilter();
-handleClickOnFilterElement();
-sortFilterElementsOnSearchInput();
 getIdOfRecipesSearch();
+
+function getIdOfRecipesSearch() {
+  const mainSearchInput = document.getElementById('searchFormControlInput');
+  const mainDiv = document.querySelector('body');
+  mainSearchInput?.addEventListener('keyup', (e) => {
+    getIdOfRecipesSearchUtils(e);
+  });
+
+  mainDiv.addEventListener('click', (e) => {
+    const targetModalDiv = e.target.closest('div.modal');
+    const targetCardDiv = e.target.closest('.card');
+    const targetCloseFilter = e.target.closest('.closefilter');
+    const targetMain = e.target.closest('main');
+    const targetAccordionDiv = e.target.closest('.accordion');
+
+    if (targetCardDiv) {
+      // show modal of recipe details
+      if (targetCardDiv && targetCardDiv.dataset?.show?.split('#')[0] === 'recipe') {
+        getModalDomOfRecipeDetails(targetCardDiv.dataset.show.split('#')[1]);
+      }
+    } else if (targetModalDiv) {
+      // close modal of recipe details
+      if (e.target.type === 'button' && e.target.dataset.close === 'recipe-modal') {
+        const myModal = document.querySelector('.modal');
+        myModal.remove();
+        window.history.replaceState('', 'home', '/');
+      }
+    } else {
+      if (targetAccordionDiv || targetMain || targetCloseFilter) {
+        addInputIntoFilterOnOpen(e);
+        handleClickOnFilterElement();
+        sortFilterElementsOnSearchInput();
+        findRecipesForTagSearch();
+        getIdOfRecipesSearchUtils(e);
+      }
+    }
+  });
+}

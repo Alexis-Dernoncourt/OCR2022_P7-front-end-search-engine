@@ -1,29 +1,25 @@
 import { recipes } from '../data/recipes.js';
 import { capitalizeText } from './utils.js';
 
-export function addInputIntoFilterOnOpen() {
-  const accordionElements = document.querySelectorAll('.accordion');
-  accordionElements.forEach((e) => {
-    e.addEventListener('click', function (e) {
-      // toggle the display of filter form on click
-      const inputForm = document.getElementById(`search-${this.id}`);
-      const dropdownBtn = document.getElementById(`btn-${this.id}`);
-      const dropdownInputContainer = document.getElementById(`${this.id}-input-container`);
+export function addInputIntoFilterOnOpen(e) {
+  // toggle the display of filter form on click
+  const splitedTargetId = e.target.id.split('-')[1];
+  const inputForm = document.getElementById(`search-${splitedTargetId}`);
+  const dropdownBtn = document.getElementById(`btn-${splitedTargetId}`);
+  const dropdownInputContainer = document.getElementById(`${splitedTargetId}-input-container`);
 
-      if (e.target !== inputForm) {
-        if (e.target.parentNode.id === `${this.id}-input-container` || e.target.parentNode.id === `heading-${this.id}`) {
-          inputForm.value = '';
-          getDataForIngredientsFilter();
-          getDataForAppliancesFilter();
-          getDataForUstensilsFilter();
-          handleClickOnFilterElement();
-          handleDeleteFilterElement();
-          dropdownBtn.classList.toggle('d-none');
-          dropdownInputContainer.classList.toggle('d-none');
-        }
-      }
-    });
-  });
+  if (e.target !== inputForm) {
+    if (e.target.parentNode.id === `${splitedTargetId}-input-container` || e.target.parentNode.id === `heading-${splitedTargetId}`) {
+      inputForm.value = '';
+    }
+    getDataForIngredientsFilter();
+    getDataForAppliancesFilter();
+    getDataForUstensilsFilter();
+    handleClickOnFilterElement();
+    handleDeleteFilterElement();
+    dropdownBtn?.classList.toggle('d-none');
+    dropdownInputContainer?.classList.toggle('d-none');
+  }
 }
 
 // TODO: refactor functions below (duplication)
@@ -150,7 +146,7 @@ export function getDataForUstensilsFilter(targetValue) {
   const ustensilsData = filterRecipesByUstensils(targetValue);
   ustensilsData.forEach((ustensil) => {
     const dom = `
-      <p class="appliance-element" data-appliance="${ustensil}">${ustensil}</p>
+      <p class="ustensils-element" data-ustensils="${ustensil}">${ustensil}</p>
     `;
     pElement.append(ustensil);
     container.innerHTML += dom;
@@ -172,18 +168,18 @@ function handleClickUtilityFunction(element, target) {
     e.addEventListener('click', (e) => {
       const classlistOfElement = e.target.parentElement.parentElement.parentElement.classList;
       const classOfElement = classlistOfElement[classlistOfElement.length - 1];
-      addDomElementOnFilterSelected(e.target.dataset[`${element}`], classOfElement);
+      addDomElementOnFilterSelected(e.target.dataset[`${element}`], classOfElement, e.target.classList[0]);
     })
   );
 }
 
-function addDomElementOnFilterSelected(element, classOfElement) {
+function addDomElementOnFilterSelected(element, classOfElement, elementIdentifier) {
   const filterItemsContainer = document.querySelector('#badges-filter-items-container');
   const elementWithComas = element.toLowerCase().split(' ').join('-');
   const filterItems = document.querySelectorAll('.badge');
 
   const dom = `
-  <span data-item='${elementWithComas}' class='badge py-2 d-inline-flex align-items-center justify-content-evenly text-${classOfElement}'>
+  <span data-item='${elementWithComas}' data-identifier='${elementIdentifier}' class='badge py-2 d-inline-flex align-items-center justify-content-evenly text-${classOfElement}'>
     ${element}
     <span class='ps-2 closefilter close-${elementWithComas}'>
       <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='close-${elementWithComas}' viewBox='0 0 16 16'>
@@ -262,4 +258,46 @@ function handleDeleteFilterElement() {
         }
       })
     );
+}
+
+function checkExistingFilterElements() {
+  const stringsToMatchWith = ['appliance-element', 'ingredient-element', 'ustensils-element'];
+  const filterMap = new Map();
+  const selectedFilterElements = document.querySelectorAll('#badges-filter-items-container .badge');
+  selectedFilterElements.forEach((element) => {
+    if (stringsToMatchWith.includes(element.dataset.identifier)) {
+      filterMap.set(`${element.dataset.item}_${element.dataset.identifier}`, `${element.dataset.identifier.split('-')[0]}_${element.dataset.item}`);
+    }
+  });
+  return Array.from(filterMap.values());
+}
+
+export function findRecipesForTagSearch() {
+  const arrayOfRecipesFromTags = new Map();
+  const arrayOfTags = checkExistingFilterElements();
+
+  arrayOfTags.forEach((tag) => {
+    const splitedTag = tag.split('_');
+    const tagValue = splitedTag[1].split('-').join(' ');
+    recipes.filter((recipe) => {
+      if (splitedTag[0] === 'appliance') {
+        if (recipe[splitedTag[0]].toLowerCase() === tagValue) {
+          arrayOfRecipesFromTags.set(recipe.id, recipe.id);
+          return recipe.id;
+        }
+      } else if (splitedTag[0] === 'ingredient') {
+        if (recipe[splitedTag[0] + 's']?.find((el) => el.ingredient.toLowerCase() === tagValue)) {
+          arrayOfRecipesFromTags.set(recipe.id, recipe.id);
+          return recipe.id;
+        }
+      } else if (splitedTag[0] === 'ustensils') {
+        if (recipe[splitedTag[0]]?.find((el) => el === tagValue)) {
+          arrayOfRecipesFromTags.set(recipe.id, recipe.id);
+          return recipe.id;
+        }
+      }
+    });
+  });
+
+  return Array.from(arrayOfRecipesFromTags.values()).sort((a, b) => a - b);
 }

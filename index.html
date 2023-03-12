@@ -171,7 +171,11 @@
       <section class="position-relative" style="margin-top: 25vh">
         <h1 class="visually-hidden">Résultats de la recherche</h1>
         <div class="container search-content my-5">
-          <div id="recipes-container" class="row row-cols-md-3 gap-3"></div>
+          <div id="recipes-container" class="row row-cols-md-3 gap-3 justify-content-center">
+            <div class="container col-md card-item-flex">
+              <p>Recherchez une recette pour les voir s'afficher içi..</p>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -179,8 +183,8 @@
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="data/recipes.js"></script>
     <script type="module" src="scripts/utils.js"></script>
-    <script type="module" src="scripts/index.js"></script>
-    <script type="module" src="scripts/filters.js"></script>
     <script type="module" src="scripts/recipes-search.js"></script>
+    <script type="module" src="scripts/filters.js"></script>
+    <script type="module" src="scripts/index.js"></script>
   </body>
 </html>
