@@ -38,7 +38,7 @@ function getIdOfRecipesSearch() {
       if (e.target.type === 'button' && e.target.dataset.close === 'recipe-modal') {
         const myModal = document.querySelector('.modal');
         myModal.remove();
-        window.history.replaceState('', 'home', '/');
+        window.history.replaceState('', 'home', 'index.html');
       }
     } else {
       if (targetAccordionDiv || targetMain || targetCloseFilter) {

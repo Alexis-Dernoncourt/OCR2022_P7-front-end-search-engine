@@ -201,5 +201,5 @@ function getRecipeModalDom(recipe) {
   `;
   const mainContainer = document.querySelector('body > main');
   mainContainer.innerHTML += dom;
-  window.history.replaceState({ id: recipe.id }, `Page recette ${recipe.name}`, `/#recipe=${recipe.id}`);
+  window.history.replaceState({ id: recipe.id }, `Page recette ${recipe.name}`, `#recipe=${recipe.id}`);
 }
