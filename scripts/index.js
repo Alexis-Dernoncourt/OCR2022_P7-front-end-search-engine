@@ -36,8 +36,14 @@ function getIdOfRecipesSearch() {
     } else if (targetModalDiv) {
       // close modal of recipe details
       if (e.target.type === 'button' && e.target.dataset.close === 'recipe-modal') {
+        const mainElement = document.querySelector('main');
         const myModal = document.querySelector('.modal');
-        myModal.remove();
+        const bodyElement = document.querySelector('body');
+        myModal.classList.toggle('d-none');
+        myModal.classList.toggle('d-grid');
+        myModal.setAttribute('aria-hidden', 'true');
+        mainElement.setAttribute('aria-hidden', 'false');
+        bodyElement.removeAttribute('style');
         window.history.replaceState('', 'home', 'index.html');
       }
     } else {

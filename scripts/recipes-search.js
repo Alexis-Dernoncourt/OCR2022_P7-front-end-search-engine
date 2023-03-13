@@ -56,6 +56,7 @@ export function getIdOfRecipesSearchUtils(e) {
     !e.target.value
   ) {
     const mainContainer = document.querySelector('#recipes-container');
+    const mainSearchInput = document.getElementById('searchFormControlInput');
     let mixedArray = [];
     let byNames, byDesc, byIngr;
     let tagFiltersArray = findRecipesForTagSearch();
@@ -64,13 +65,11 @@ export function getIdOfRecipesSearchUtils(e) {
       byNames = mainFilterRecipesByNames(e.target?.value);
       byDesc = mainFilterRecipesByDescriptions(e.target?.value);
       byIngr = mainFilterRecipesByIngredients(e.target?.value);
-    } else {
-      const mainSearchInput = document.getElementById('searchFormControlInput');
-      if (mainSearchInput?.value && mainSearchInput?.value.length >= 3) {
-        byNames = mainFilterRecipesByNames(mainSearchInput?.value);
-        byDesc = mainFilterRecipesByDescriptions(mainSearchInput?.value);
-        byIngr = mainFilterRecipesByIngredients(mainSearchInput?.value);
-      }
+    }
+    if (mainSearchInput?.value && mainSearchInput?.value.length >= 3) {
+      byNames = mainFilterRecipesByNames(mainSearchInput?.value);
+      byDesc = mainFilterRecipesByDescriptions(mainSearchInput?.value);
+      byIngr = mainFilterRecipesByIngredients(mainSearchInput?.value);
     }
 
     // TODO: check if there is some filters here to update mixedArray
@@ -168,38 +167,44 @@ function getRecipeDetails(recipeId) {
 function getRecipeModalDom(recipe) {
   const desc = recipe.description.split('. ');
   const dom = `
-    <div class="modal d-grid fade show" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="false">
-      <div class="modal-dialog modal-xl w-100-md">
-        <div class="modal-content h-100">
-          <div class="modal-header">
-            <div class="modal-image-head-container">
-              <img src="assets/images/food-img.jpg" alt="" class="modal-head-img" />
-              <h5 class="modal-title" id="staticBackdropLabel">${recipe.name}</h5>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="staticBackdrop" aria-label="Fermer" data-close="recipe-modal"></button>
+    <div class="modal-dialog modal-xl w-100-md">
+      <div class="modal-content h-100">
+        <div class="modal-header">
+          <div class="modal-image-head-container">
+            <img src="assets/images/food-img.jpg" alt="" class="modal-head-img" />
+            <h5 class="modal-title" id="staticBackdropLabel">${recipe.name}</h5>
           </div>
-          <div class="modal-body">
-          <div class="d-flex jusctify-content-end mb-2">
-            <span class="fw-bold d-flex align-items-center recipe-time ms-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="clock-icon" viewBox="0 0 16 16">
-                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-              </svg>
-              Durée: ${recipe.time} min
-            </span>
-          </div>
-          <ol>
-            ${desc.map((el) => `<li>${el}.</li>`).join('')}
-          </ol>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="staticBackdrop" data-close="recipe-modal">Fermer</button>
-          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="staticBackdrop" aria-label="Fermer" data-close="recipe-modal"></button>
+        </div>
+        <div class="modal-body">
+        <div class="d-flex jusctify-content-end mb-2">
+          <span class="fw-bold d-flex align-items-center recipe-time ms-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="clock-icon" viewBox="0 0 16 16">
+              <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+            </svg>
+            Durée: ${recipe.time} min
+          </span>
+        </div>
+        <ol>
+          ${desc.map((el) => `<li>${el}.</li>`).join('')}
+        </ol>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="staticBackdrop" data-close="recipe-modal">Fermer</button>
         </div>
       </div>
     </div>
   `;
-  const mainContainer = document.querySelector('body > main');
-  mainContainer.innerHTML += dom;
+  const mainElement = document.querySelector('main');
+  const modalContainer = document.querySelector('.modal');
+  const bodyElement = document.querySelector('body');
+  modalContainer.innerHTML = '';
+  modalContainer.innerHTML += dom;
+  modalContainer.classList.toggle('d-none');
+  modalContainer.classList.toggle('d-grid');
+  modalContainer.setAttribute('aria-hidden', 'false');
+  mainElement.setAttribute('aria-hidden', 'true');
+  bodyElement.style.overflowY = 'hidden';
   window.history.replaceState({ id: recipe.id }, `Page recette ${recipe.name}`, `#recipe=${recipe.id}`);
 }
