@@ -53,6 +53,25 @@ function getIdOfRecipesSearch() {
         sortFilterElementsOnSearchInput();
         findRecipesForTagSearch();
         getIdOfRecipesSearchUtils(e);
+
+        if (!targetAccordionDiv) {
+          const accordionElement = document.querySelectorAll('.accordion-collapse.collapse.show');
+          if (accordionElement) {
+            accordionElement.forEach((el) => {
+              // Close accordion(s) if is open on click outside.
+              const splitedTargetId = el.id.split('-')[1];
+              const dropdownBtn = document.getElementById(`btn-${splitedTargetId}`);
+              const dropdownInputContainer = document.getElementById(`${splitedTargetId}-input-container`);
+              el.classList.remove('show');
+              dropdownBtn?.classList.toggle('d-none');
+              dropdownInputContainer?.classList.toggle('d-none');
+              document.querySelectorAll(`#btn-${splitedTargetId}`).forEach((e) => {
+                e.setAttribute('aria-expanded', 'false');
+                e.classList.toggle('collapsed');
+              });
+            });
+          }
+        }
       }
     }
   });
