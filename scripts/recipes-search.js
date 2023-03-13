@@ -84,8 +84,10 @@ export function getIdOfRecipesSearchUtils(e) {
 
     const arrayOfRecipesId = Array.from(filteredValues.values());
 
+    const totalRecipesInfoExist = document.querySelector('#total-recipes-info');
     mainContainer.innerHTML = '';
     if (mixedArray.length === 0 || (e.target.type === 'search' && e.target?.value?.length < 3 && !tagFiltersArray)) {
+      totalRecipesInfoExist?.remove();
       getNotFoundDom();
       return;
     }
@@ -97,6 +99,18 @@ export function getIdOfRecipesSearchUtils(e) {
         }
       });
     });
+
+    // Display/hide the total of recipes found
+    if (arrayOfRecipesId.length <= 250) {
+      totalRecipesInfoExist?.remove();
+      const totalRecipes = document.createElement('p');
+      totalRecipes.setAttribute('id', 'total-recipes-info');
+      totalRecipes.textContent = `Total de recettes trouvées : ${arrayOfRecipesId.length}`;
+      totalRecipes.style.color = '#545454';
+      mainContainer.before(totalRecipes);
+    } else {
+      totalRecipesInfoExist?.remove();
+    }
   }
 }
 
