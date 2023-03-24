@@ -9,10 +9,12 @@ import {
 } from './filters.js';
 import { getIdOfRecipesSearchUtils, getModalDomOfRecipeDetails } from './recipes-search.js';
 
+const mainDiv = document.querySelector('main');
 getDataForIngredientsFilter();
 getDataForAppliancesFilter();
 getDataForUstensilsFilter();
 getIdOfRecipesSearch();
+mainDiv.click();
 
 function getIdOfRecipesSearch() {
   const mainSearchInput = document.getElementById('searchFormControlInput');

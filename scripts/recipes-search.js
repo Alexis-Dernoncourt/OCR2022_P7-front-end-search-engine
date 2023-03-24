@@ -73,12 +73,28 @@ export function getIdOfRecipesSearchUtils(e) {
     }
 
     // TODO: check if there is some filters here to update mixedArray
+    // FILTER HERE THE MAIN SEARCH ??
     if (tagFiltersArray && byNames && byDesc && byIngr) {
-      mixedArray = [...byNames, ...byDesc, ...byIngr, ...tagFiltersArray];
-    } else if (byNames && byDesc && byIngr) {
+      if (tagFiltersArray.length > 0) {
+        const baseArray = [...byNames, ...byDesc, ...byIngr];
+        baseArray.forEach((el) => {
+          tagFiltersArray?.forEach((e) => {
+            if (el === e) {
+              mixedArray.push(e);
+            }
+          });
+        });
+      } else {
+        mixedArray = [...byNames, ...byDesc, ...byIngr];
+      }
+    } else if (!tagFiltersArray && byNames && byDesc && byIngr) {
       mixedArray = [...byNames, ...byDesc, ...byIngr];
     } else if (tagFiltersArray) {
-      mixedArray = [...tagFiltersArray];
+      if (tagFiltersArray.length <= 0 && !byNames && !byDesc && !byIngr) {
+        mixedArray = recipes.map((el) => el.id);
+      } else {
+        mixedArray = tagFiltersArray;
+      }
     }
     mixedArray?.sort((a, b) => a > b).forEach((el) => filteredValues.set(el, el));
 
