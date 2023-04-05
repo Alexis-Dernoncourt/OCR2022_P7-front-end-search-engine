@@ -10,6 +10,8 @@ import {
 import { getIdOfRecipesSearchUtils, getModalDomOfRecipeDetails } from './recipes-search.js';
 
 const mainDiv = document.querySelector('main');
+window.mainSearchArr = [];
+
 getDataForIngredientsFilter();
 getDataForAppliancesFilter();
 getDataForUstensilsFilter();

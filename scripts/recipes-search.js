@@ -57,7 +57,6 @@ export function getIdOfRecipesSearchUtils(e) {
   ) {
     const mainContainer = document.querySelector('#recipes-container');
     const mainSearchInput = document.getElementById('searchFormControlInput');
-    let mixedArray = [];
     let byNames, byDesc, byIngr;
     let tagFiltersArray = findRecipesForTagSearch();
 
@@ -72,37 +71,37 @@ export function getIdOfRecipesSearchUtils(e) {
       byIngr = mainFilterRecipesByIngredients(mainSearchInput?.value);
     }
 
-    // TODO: check if there is some filters here to update mixedArray
-    // FILTER HERE THE MAIN SEARCH ??
+    // Check if there is some filters to update mainSearchArr
     if (tagFiltersArray && byNames && byDesc && byIngr) {
       if (tagFiltersArray.length > 0) {
         const baseArray = [...byNames, ...byDesc, ...byIngr];
         baseArray.forEach((el) => {
           tagFiltersArray?.forEach((e) => {
             if (el === e) {
-              mixedArray.push(e);
+              window.mainSearchArr = [];
+              window.mainSearchArr.push(e);
             }
           });
         });
       } else {
-        mixedArray = [...byNames, ...byDesc, ...byIngr];
+        window.mainSearchArr = [...byNames, ...byDesc, ...byIngr];
       }
     } else if (!tagFiltersArray && byNames && byDesc && byIngr) {
-      mixedArray = [...byNames, ...byDesc, ...byIngr];
+      window.mainSearchArr = [...byNames, ...byDesc, ...byIngr];
     } else if (tagFiltersArray) {
       if (tagFiltersArray.length <= 0 && !byNames && !byDesc && !byIngr) {
-        mixedArray = recipes.map((el) => el.id);
+        window.mainSearchArr = recipes.map((el) => el.id);
       } else {
-        mixedArray = tagFiltersArray;
+        window.mainSearchArr = tagFiltersArray;
       }
     }
-    mixedArray?.sort((a, b) => a > b).forEach((el) => filteredValues.set(el, el));
+    window.mainSearchArr?.sort((a, b) => a > b).forEach((el) => filteredValues.set(el, el));
 
     const arrayOfRecipesId = Array.from(filteredValues.values());
 
     const totalRecipesInfoExist = document.querySelector('#total-recipes-info');
     mainContainer.innerHTML = '';
-    if (mixedArray.length === 0 || (e.target.type === 'search' && e.target?.value?.length < 3 && !tagFiltersArray)) {
+    if (window.mainSearchArr.length === 0 || (e.target.type === 'search' && e.target?.value?.length < 3 && !tagFiltersArray)) {
       totalRecipesInfoExist?.remove();
       getNotFoundDom();
       return;
