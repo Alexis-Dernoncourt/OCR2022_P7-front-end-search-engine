@@ -279,25 +279,42 @@ export function findRecipesForTagSearch() {
   arrayOfTags.forEach((tag) => {
     const splitedTag = tag.split('_');
     const tagValue = splitedTag[1].split('-').join(' ');
-    recipes.filter((recipe) => {
+    recipes.forEach((recipe) => {
       if (splitedTag[0] === 'appliance') {
         if (recipe[splitedTag[0]].toLowerCase() === tagValue) {
-          arrayOfRecipesFromTags.set(recipe.id, recipe.id);
-          return recipe.id;
+          arrayOfRecipesFromTags.set(
+            recipe.id, 
+            {
+              recipeId: recipe.id,
+              scope: 'appliance',
+              value: tagValue
+            }
+          );
         }
       } else if (splitedTag[0] === 'ingredient') {
         if (recipe[splitedTag[0] + 's']?.find((el) => el.ingredient.toLowerCase() === tagValue)) {
-          arrayOfRecipesFromTags.set(recipe.id, recipe.id);
-          return recipe.id;
+          arrayOfRecipesFromTags.set(
+            recipe.id,
+            {
+              recipeId: recipe.id,
+              scope: 'ingredients',
+              value: tagValue
+            }
+          );
         }
       } else if (splitedTag[0] === 'ustensils') {
         if (recipe[splitedTag[0]]?.find((el) => el === tagValue)) {
-          arrayOfRecipesFromTags.set(recipe.id, recipe.id);
-          return recipe.id;
+          arrayOfRecipesFromTags.set(
+            recipe.id,
+            {
+              recipeId: recipe.id,
+              scope: 'ustensils',
+              value: tagValue
+            }
+          );
         }
       }
     });
   });
-
-  return Array.from(arrayOfRecipesFromTags.values()).sort((a, b) => a - b);
+  return Array.from(arrayOfRecipesFromTags.values());
 }
