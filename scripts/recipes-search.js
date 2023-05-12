@@ -89,13 +89,13 @@ export function getIdOfRecipesSearchUtils(e) {
     }
       
     if (tagFiltersArray.length <= 0 && byNames && byDesc && byIngr) {
-      baseArray = new Set([...byNames, ...byDesc, ...byIngr].sort((a, b) => a > b));
+      baseArray = new Set([...byNames, ...byDesc, ...byIngr].sort());
       window.mainSearchArr = Array.from(baseArray.values());
     }
 
     if (tagFiltersArray.length > 0) {
       if (byNames || byDesc || byIngr) {
-        baseArray = new Set([...byNames, ...byDesc, ...byIngr].sort((a, b) => a > b));
+        baseArray = new Set([...byNames, ...byDesc, ...byIngr].sort());
       }
 
       if (baseArray.size === 0) { // pas de recherche entrée dans la barre principale
@@ -120,38 +120,48 @@ export function getIdOfRecipesSearchUtils(e) {
       } else {
         // Recherche avec plusieurs filtres.
         if (baseArray.size > 0) {
-          const arrayToCompare = Array.from(baseArray.values());
+          const arrayToCompare = Array.from(baseArray.values()).sort((a, b) => a > b);
+          // console.log('arrayToCompare=>>', arrayToCompare);
           const filteredRecipes = arrayToCompare.filter(el => {
             const recipeDetails = recipes.find(recipe => recipe.id === el);
+            // console.log('tagFiltersArray=>>', tagFiltersArray);
+            
             const requiredTags = Array.from(new Set(tagFiltersArray.map(tag => tag.value)).values());
             const scopeOfTag = Array.from(new Set(tagFiltersArray.map(tag => tag.scope)).values());
-  
+            // console.log('requiredTags=>', requiredTags);
+            // console.log('scopeOfTag=>', scopeOfTag);
+            
             const ingredientValues = recipeDetails.ingredients.map(el => el.ingredient.toLowerCase());
             const applianceValues = [recipeDetails.appliance.toLowerCase()];
             const ustensilsValues = recipeDetails.ustensils.map(el => el.toLowerCase());
+            // console.log('ingredientValues=>>', ingredientValues);
+            // console.log('applianceValues=>>', applianceValues);
+            // console.log('ustensilsValues=>>', ustensilsValues);
 
-            if (scopeOfTag.at(0) === 'ingredients') {
-              if (!requiredTags.every(tag => ingredientValues.includes(tag))) {
+            if (scopeOfTag.some(tag => tag === 'ingredients')) {
+              // console.log('ici1');
+              if (!requiredTags.some(tag => ingredientValues.includes(tag))) {
                 return false;
               }
-              return true;
             }
-
-            if (scopeOfTag.at(0) === 'appliance') {
-              if (!requiredTags.every(tag => applianceValues.includes(tag))) {
+            
+            if (scopeOfTag.some(tag => tag === 'appliance')) {
+              // console.log('ici2 ');
+              if (!requiredTags.some(tag => applianceValues.includes(tag))) {
                 return false;
               }
-              return true;
             }
-
-            if (scopeOfTag.at(0) === 'ustensils') {
-              if (!requiredTags.every(tag => ustensilsValues.includes(tag))) {
+            
+            if (scopeOfTag.some(tag => tag === 'ustensils')) {
+              // console.log('ici3');
+              if (!requiredTags.some(tag => ustensilsValues.includes(tag))) {
                 return false;
               }
-              return true;
             }
+            return true;
           });
-          
+
+          console.log('filteredRecipes=>>', filteredRecipes);
           window.mainSearchArr = filteredRecipes;
         }
       }
