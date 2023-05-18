@@ -120,6 +120,7 @@ export function getIdOfRecipesSearchUtils(e) {
       } else {
         // Recherche avec plusieurs filtres.
         if (baseArray.size > 0) {
+          // console.log('selectedFilterElements=>', Array.from(selectedFilterElements).map(tagDomElement => tagDomElement.dataset.identifier.split('-')[0]));
           const arrayToCompare = Array.from(baseArray.values()).sort((a, b) => a > b);
           // console.log('arrayToCompare=>>', arrayToCompare);
           const filteredRecipes = arrayToCompare.filter(el => {
@@ -137,31 +138,102 @@ export function getIdOfRecipesSearchUtils(e) {
             // console.log('ingredientValues=>>', ingredientValues);
             // console.log('applianceValues=>>', applianceValues);
             // console.log('ustensilsValues=>>', ustensilsValues);
+            const filterElementsArray = Array.from(selectedFilterElements).map(tagDomElement => tagDomElement.dataset.identifier.split('-')[0]);
+            // console.log('filterElementsArray=>', filterElementsArray);
 
-            if (scopeOfTag.some(tag => tag === 'ingredients')) {
+            if (scopeOfTag.includes('ingredients')) {
               // console.log('ici1');
-              if (!requiredTags.some(tag => ingredientValues.includes(tag))) {
+              const filteredElementsTagArray = filterElementsArray.filter(ingredientTag => ingredientTag === 'ingredient');
+              const ingredientFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
+                {
+                  if (tagDomElement.dataset.identifier.split('-')[0] === 'ingredient') {
+                    return tagDomElement.dataset.item.split('-').join(' ')
+                  }
+                }
+              ).filter(el => el !== undefined);
+              // console.log('ingredientFilterArray=>', ingredientFilterArray, requiredTags);
+              // console.log('filteredElementsTagArray=>', filteredElementsTagArray);
+
+              if (filteredElementsTagArray.length > 1) {
+                const totalFilterElementsMatch = ingredientValues.filter(
+                  tag => ingredientFilterArray.find(
+                    tag2 => tag === tag2
+                  )
+                );
+                // console.log('match=>', totalFilterElementsMatch, ingredientFilterArray);
+                if (totalFilterElementsMatch.length === ingredientFilterArray.length) {
+                  // console.log('ici-coucou2', el);
+                  return true;
+                }
                 return false;
+              } else {
+                if (!requiredTags.some(tag => ingredientValues.includes(tag))) {
+                  return false;
+                }
               }
             }
             
-            if (scopeOfTag.some(tag => tag === 'appliance')) {
+            if (scopeOfTag.includes('appliance')) {
               // console.log('ici2 ');
-              if (!requiredTags.some(tag => applianceValues.includes(tag))) {
+              const filteredApplianceTagArray = filterElementsArray.filter(applianceTag => applianceTag === 'appliance');
+              const applianceFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
+                {
+                  if (tagDomElement.dataset.identifier.split('-')[0] === 'appliance') {
+                    return tagDomElement.dataset.item.split('-').join(' ')
+                  }
+                }
+              ).filter(el => el !== undefined);
+
+              // console.log('filteredApplianceTagArray=>', filteredApplianceTagArray);
+              // console.log('applianceFilterArray=>', applianceFilterArray);
+
+              if (filteredApplianceTagArray.length > 1) {
+                if (applianceFilterArray.length > 1) {
+                  console.error('Too much appliance tags');
+                }
                 return false;
+              } else {
+                if (!requiredTags.some(tag => applianceValues.includes(tag))) {
+                  return false;
+                }
+              }
+
+            }
+            
+            if (scopeOfTag.includes('ustensils')) {
+              // console.log('ici3');
+              const filteredUstensilsTagArray = filterElementsArray.filter(ustensilsTag => ustensilsTag === 'ustensils');
+              const ustensilsFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
+                {
+                  if (tagDomElement.dataset.identifier.split('-')[0] === 'ustensils') {
+                    return tagDomElement.dataset.item.split('-').join(' ')
+                  }
+                }
+              ).filter(el => el !== undefined);
+
+              if (filteredUstensilsTagArray.length > 1) {
+                const totalFilterElementsMatch = ustensilsValues.filter(
+                  tag => ustensilsFilterArray.find(
+                    tag2 => tag === tag2
+                  )
+                );
+                // console.log('match3=>', totalFilterElementsMatch, ustensilsFilterArray);
+                if (totalFilterElementsMatch.length === ustensilsFilterArray.length) {
+                  // console.log('ici-coucou2', el);
+                  return true;
+                }
+                return false;
+              } else {
+                if (!requiredTags.some(tag => ustensilsValues.includes(tag))) {
+                  return false;
+                }
               }
             }
             
-            if (scopeOfTag.some(tag => tag === 'ustensils')) {
-              // console.log('ici3');
-              if (!requiredTags.some(tag => ustensilsValues.includes(tag))) {
-                return false;
-              }
-            }
             return true;
           });
 
-          console.log('filteredRecipes=>>', filteredRecipes);
+          // console.log('filteredRecipes=>>', filteredRecipes);
           window.mainSearchArr = filteredRecipes;
         }
       }
