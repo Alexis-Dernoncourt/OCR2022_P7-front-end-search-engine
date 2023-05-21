@@ -240,10 +240,15 @@ export function getIdOfRecipesSearchUtils(e) {
     };
 
     const totalRecipesInfoExist = document.querySelector('#total-recipes-info');
-    mainContainer.innerHTML = '';
+    if (window.mainSearchArr?.length > 0 || (e.target.type === 'search' && e.target?.value?.length >= 3)) {
+      mainContainer.innerHTML = '';
+    }
+
     if (window.mainSearchArr?.length === 0 || (e.target.type === 'search' && e.target?.value?.length < 3 && !tagFiltersArray)) {
       totalRecipesInfoExist?.remove();
-      getNotFoundDom('Aucune recette ne correspond aux filtres que vous avez renseignés.');
+      if (window.mainSearchArr?.length === 0) {
+        getNotFoundDom('Aucune recette ne correspond aux filtres que vous avez renseignés.');
+      }
       return;
     }
 
@@ -265,7 +270,7 @@ export function getIdOfRecipesSearchUtils(e) {
       mainContainer.before(totalRecipes);
     } else {
       totalRecipesInfoExist?.remove();
-      getNotFoundDom();
+      // getNotFoundDom();
     }
   }
 }
