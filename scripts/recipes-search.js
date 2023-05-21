@@ -240,10 +240,10 @@ export function getIdOfRecipesSearchUtils(e) {
     };
 
     const totalRecipesInfoExist = document.querySelector('#total-recipes-info');
-    if (window.mainSearchArr?.length > 0 || (e.target.type === 'search' && e.target?.value?.length >= 3)) {
+    if (window.mainSearchArr?.length <= 50 || (e.target.type === 'search' && e.target?.value?.length >= 3)) {
       mainContainer.innerHTML = '';
     }
-
+    
     if (window.mainSearchArr?.length === 0 || (e.target.type === 'search' && e.target?.value?.length < 3 && !tagFiltersArray)) {
       totalRecipesInfoExist?.remove();
       if (window.mainSearchArr?.length === 0) {
