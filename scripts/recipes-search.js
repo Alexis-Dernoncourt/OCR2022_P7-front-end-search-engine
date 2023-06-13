@@ -1,5 +1,5 @@
 import { recipes } from '../data/recipes.js';
-import { sanitizeIngredientsMap, findRecipesForTagSearch } from './filters.js';
+import { sanitizeIngredientsMap, findRecipesForTagSearch, getDataForIngredientsFilter, getDataForAppliancesFilter, getDataForUstensilsFilter, handleClickOnFilterElement, handleDeleteFilterElement } from './filters.js';
 
 function makeNamesMap() {
   const amapOfNames = new Map();
@@ -116,33 +116,36 @@ export function getIdOfRecipesSearchUtils(e) {
             })
             window.mainSearchArr = testArr;
           });
+          window.mainSearchArr.forEach(element => {
+            const recipeDetails = recipes.find(recipe => recipe.id === element);
+            const ingredientValues = recipeDetails.ingredients.map(el => el.ingredient.toLowerCase());
+            const applianceValues = [recipeDetails.appliance.toLowerCase()];
+            const ustensilsValues = recipeDetails.ustensils.map(el => el.toLowerCase());
+            getDataForIngredientsFilter(ingredientValues.sort());
+            getDataForAppliancesFilter(applianceValues.sort());
+            getDataForUstensilsFilter(ustensilsValues.sort());
+            handleClickOnFilterElement();
+            handleDeleteFilterElement();
+          })
         }
       } else {
         // Recherche avec plusieurs filtres.
         if (baseArray.size > 0) {
-          // console.log('selectedFilterElements=>', Array.from(selectedFilterElements).map(tagDomElement => tagDomElement.dataset.identifier.split('-')[0]));
           const arrayToCompare = Array.from(baseArray.values()).sort((a, b) => a > b);
-          // console.log('arrayToCompare=>>', arrayToCompare);
           const filteredRecipes = arrayToCompare.filter(el => {
-            const recipeDetails = recipes.find(recipe => recipe.id === el);
-            // console.log('tagFiltersArray=>>', tagFiltersArray);
-            
+            const recipeDetails = recipes.find(recipe => recipe.id === el);            
             const requiredTags = Array.from(new Set(tagFiltersArray.map(tag => tag.value)).values());
             const scopeOfTag = Array.from(new Set(tagFiltersArray.map(tag => tag.scope)).values());
-            // console.log('requiredTags=>', requiredTags);
-            // console.log('scopeOfTag=>', scopeOfTag);
             
             const ingredientValues = recipeDetails.ingredients.map(el => el.ingredient.toLowerCase());
             const applianceValues = [recipeDetails.appliance.toLowerCase()];
             const ustensilsValues = recipeDetails.ustensils.map(el => el.toLowerCase());
-            // console.log('ingredientValues=>>', ingredientValues);
-            // console.log('applianceValues=>>', applianceValues);
-            // console.log('ustensilsValues=>>', ustensilsValues);
             const filterElementsArray = Array.from(selectedFilterElements).map(tagDomElement => tagDomElement.dataset.identifier.split('-')[0]);
-            // console.log('filterElementsArray=>', filterElementsArray);
 
             if (scopeOfTag.includes('ingredients')) {
-              // console.log('ici1');
+              getDataForIngredientsFilter(ingredientValues.sort());
+              handleClickOnFilterElement();
+              handleDeleteFilterElement();
               const filteredElementsTagArray = filterElementsArray.filter(ingredientTag => ingredientTag === 'ingredient');
               const ingredientFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
                 {
@@ -151,8 +154,6 @@ export function getIdOfRecipesSearchUtils(e) {
                   }
                 }
               ).filter(el => el !== undefined);
-              // console.log('ingredientFilterArray=>', ingredientFilterArray, requiredTags);
-              // console.log('filteredElementsTagArray=>', filteredElementsTagArray);
 
               if (filteredElementsTagArray.length > 1) {
                 const totalFilterElementsMatch = ingredientValues.filter(
@@ -160,9 +161,7 @@ export function getIdOfRecipesSearchUtils(e) {
                     tag2 => tag === tag2
                   )
                 );
-                // console.log('match=>', totalFilterElementsMatch, ingredientFilterArray);
                 if (totalFilterElementsMatch.length === ingredientFilterArray.length) {
-                  // console.log('ici-coucou2', el);
                   return true;
                 }
                 return false;
@@ -174,7 +173,6 @@ export function getIdOfRecipesSearchUtils(e) {
             }
             
             if (scopeOfTag.includes('appliance')) {
-              // console.log('ici2 ');
               const filteredApplianceTagArray = filterElementsArray.filter(applianceTag => applianceTag === 'appliance');
               const applianceFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
                 {
@@ -183,9 +181,6 @@ export function getIdOfRecipesSearchUtils(e) {
                   }
                 }
               ).filter(el => el !== undefined);
-
-              // console.log('filteredApplianceTagArray=>', filteredApplianceTagArray);
-              // console.log('applianceFilterArray=>', applianceFilterArray);
 
               if (filteredApplianceTagArray.length > 1) {
                 if (applianceFilterArray.length > 1) {
@@ -201,7 +196,9 @@ export function getIdOfRecipesSearchUtils(e) {
             }
             
             if (scopeOfTag.includes('ustensils')) {
-              // console.log('ici3');
+              getDataForUstensilsFilter(ustensilsValues.sort());
+              handleClickOnFilterElement();
+              handleDeleteFilterElement();
               const filteredUstensilsTagArray = filterElementsArray.filter(ustensilsTag => ustensilsTag === 'ustensils');
               const ustensilsFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
                 {
@@ -217,9 +214,7 @@ export function getIdOfRecipesSearchUtils(e) {
                     tag2 => tag === tag2
                   )
                 );
-                // console.log('match3=>', totalFilterElementsMatch, ustensilsFilterArray);
                 if (totalFilterElementsMatch.length === ustensilsFilterArray.length) {
-                  // console.log('ici-coucou2', el);
                   return true;
                 }
                 return false;
@@ -233,7 +228,6 @@ export function getIdOfRecipesSearchUtils(e) {
             return true;
           });
 
-          // console.log('filteredRecipes=>>', filteredRecipes);
           window.mainSearchArr = filteredRecipes;
         }
       }
