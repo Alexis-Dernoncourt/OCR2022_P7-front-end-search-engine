@@ -2,33 +2,46 @@ import { recipes } from '../data/recipes.js';
 import { sanitizeIngredientsMap, findRecipesForTagSearch, getDataForIngredientsFilter, getDataForAppliancesFilter, getDataForUstensilsFilter, handleClickOnFilterElement, handleDeleteFilterElement } from './filters.js';
 
 function makeNamesMap() {
-  const amapOfNames = new Map();
-  recipes.forEach((el) => {
-    amapOfNames.set({ id: el.id }, { name: el.name });
-  });
-  return amapOfNames;
+  const mapOfNames = new Map();
+  for (let i = 0; i < recipes.length; i++) {
+    mapOfNames.set({ id: recipes[i].id }, { name: recipes[i].name });
+  }
+  return mapOfNames;
 }
 
 function makeDescriptionsMap() {
   const mapOfDescriptions = new Map();
-  recipes.forEach((el) => {
-    mapOfDescriptions.set({ id: el.id }, { desc: el.description });
-  });
+  for (let i = 0; i < recipes.length; i++) {
+    mapOfDescriptions.set({ id: recipes[i].id }, { desc: recipes[i].description });
+  };
   return mapOfDescriptions;
+}
+
+function sortArray(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        const temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  return arr;
 }
 
 function filteringDatas(stringValue, datas, context) {
   const arrayFromDatas = Array.from(datas);
   const filteredDatas = new Map();
   if (stringValue && stringValue.length >= 3) {
-    arrayFromDatas.forEach((e, i) => {
-      if (e[1][context].toLowerCase().includes(stringValue.toLowerCase())) {
-        filteredDatas.set(i, e[0].id);
+    for (let i = 0; i < arrayFromDatas.length; i++) {
+      if (arrayFromDatas[i][1][context].toLowerCase().includes(stringValue.toLowerCase())) {
+        filteredDatas.set(i, arrayFromDatas[i][0].id);
       }
-    });
-    return Array.from(filteredDatas.values()).sort(Intl.Collator().compare);
+    }
+    return sortArray(Array.from(filteredDatas.values()));
   } else {
-    return arrayFromDatas.sort(Intl.Collator().compare);
+    return sortArray(arrayFromDatas);
   }
 }
 
@@ -59,10 +72,13 @@ export function getIdOfRecipesSearchUtils(e) {
   if(!mainSearchInput?.value && !e.target?.value) {
     if (tagFiltersArray.length > 0) {
       let filteredRecipesIds = [];
-      tagFiltersArray.forEach(tag => {
-        const filteredRecipes = recipes.filter(recipe => recipe.id === tag.recipeId);
-        filteredRecipesIds.push(filteredRecipes[0].id);
-      })
+      for (let i = 0; i < tagFiltersArray.length; i++) {
+        for (let r = 0; r < recipes.length; r++) {
+          if (recipes[r].id === tagFiltersArray[i].recipeId) {
+            filteredRecipesIds.push(recipes[r].id)
+          }
+        }
+      }
       window.mainSearchArr = filteredRecipesIds;
     }
   }
@@ -75,7 +91,11 @@ export function getIdOfRecipesSearchUtils(e) {
     ) {
       
     if (tagFiltersArray.length <= 0 && (!byNames && !byDesc && !byIngr)) {
-      window.mainSearchArr = recipes.map((el) => el.id);
+      let recipesArray = [];
+      for (let r = 0; r < recipes.length; r++) {
+        recipesArray.push(recipes[r].id);
+      }
+      window.mainSearchArr = recipesArray;
     }
 
     if (e.target?.value) {
@@ -89,98 +109,204 @@ export function getIdOfRecipesSearchUtils(e) {
     }
       
     if (tagFiltersArray.length <= 0 && byNames && byDesc && byIngr) {
-      baseArray = new Set([...byNames, ...byDesc, ...byIngr].sort());
+      baseArray = new Set(sortArray([...byNames, ...byDesc, ...byIngr]));
       window.mainSearchArr = Array.from(baseArray.values());
     }
 
     if (tagFiltersArray.length > 0) {
       if (byNames || byDesc || byIngr) {
-        baseArray = new Set([...byNames, ...byDesc, ...byIngr].sort());
+        baseArray = new Set(sortArray([...byNames, ...byDesc, ...byIngr]));
       }
 
       if (baseArray.size === 0) { // pas de recherche entrée dans la barre principale
-        tagFiltersArray.forEach(el => {
-          const filteredElements = recipes.filter(recipe => recipe.id === el.recipeId);
-          filteredElements.forEach(element => testArr.push(element.id));
-        });
-        window.mainSearchArr = testArr;
+        for (let i = 0; i < tagFiltersArray.length; i++) {
+          const el = tagFiltersArray[i];
+          for (let r = 0; r < recipes.length; r++) {
+            if (recipes[r].id === el.recipeId) {
+              testArr.push(recipes[r].id);
+            }
+          }
+        }
+        window.mainSearchArr = sortArray(testArr);
       }
 
       if (selectedFilterElements.length === 1) {
         if (baseArray.size > 0) {
-          Array.from(baseArray.values()).forEach(item => {
-            tagFiltersArray.forEach(el => {
+          for (let i = 0; i < Array.from(baseArray.values()).length; i++) {
+            const item = Array.from(baseArray.values())[i];
+            for (let j = 0; j < tagFiltersArray.length; j++) {
+              const el = tagFiltersArray[j];
               if (el.recipeId === item) {
-                testArr.push(item)
+                testArr.push(item);
               }
-            })
-            window.mainSearchArr = testArr;
-          });
-          window.mainSearchArr.forEach(element => {
-            const recipeDetails = recipes.find(recipe => recipe.id === element);
-            const ingredientValues = recipeDetails.ingredients.map(el => el.ingredient.toLowerCase());
+            }
+          }
+          window.mainSearchArr = testArr;
+
+          for (let i = 0; i < window.mainSearchArr.length; i++) {
+            const element = window.mainSearchArr[i];
+            let recipeDetails;
+            for (let i = 0; i < recipes.length; i++) {
+              if (recipes[i].id === element) {
+                recipeDetails = recipes[i];
+                break;
+              }
+            }
+            const ingredientValues = [];
+            const ustensilsValues = [];
             const applianceValues = [recipeDetails.appliance.toLowerCase()];
-            const ustensilsValues = recipeDetails.ustensils.map(el => el.toLowerCase());
-            getDataForIngredientsFilter(ingredientValues.sort());
-            getDataForAppliancesFilter(applianceValues.sort());
-            getDataForUstensilsFilter(ustensilsValues.sort());
+            for (let i = 0; i < recipeDetails.ingredients.length; i++) {
+              const el = recipeDetails.ingredients[i];
+              ingredientValues.push(el.ingredient.toLowerCase());
+            }
+            for (let i = 0; i < recipeDetails.ustensils.length; i++) {
+              ustensilsValues.push(recipeDetails.ustensils[i].toLowerCase());
+            }
+            getDataForIngredientsFilter(sortArray(ingredientValues));
+            getDataForAppliancesFilter(sortArray(applianceValues));
+            getDataForUstensilsFilter(sortArray(ustensilsValues));
             handleClickOnFilterElement();
             handleDeleteFilterElement();
-          })
+          }
         }
       } else {
         // Recherche avec plusieurs filtres.
         if (baseArray.size > 0) {
-          const arrayToCompare = Array.from(baseArray.values()).sort((a, b) => a > b);
+          const arrayToCompare = sortArray(Array.from(baseArray.values()));
           const filteredRecipes = arrayToCompare.filter(el => {
-            const recipeDetails = recipes.find(recipe => recipe.id === el);            
-            const requiredTags = Array.from(new Set(tagFiltersArray.map(tag => tag.value)).values());
-            const scopeOfTag = Array.from(new Set(tagFiltersArray.map(tag => tag.scope)).values());
+            let recipeDetails;
+            for (let i = 0; i < recipes.length; i++) {
+              const recipe = recipes[i];
+              if (recipe.id === el) {
+                recipeDetails = recipe;
+                break;
+              }
+            }
+
+            const requiredTags = [];
+            const tagValues = [];
+
+            for (let i = 0; i < tagFiltersArray.length; i++) {
+              const tag = tagFiltersArray[i];
+              tagValues.push(tag.value);
+            }
+
+            for (let i = 0; i < tagValues.length; i++) {
+              const value = tagValues[i];
+              if (!requiredTags.includes(value)) {
+                requiredTags.push(value);
+              }
+            }
+
+            const scopeOfTag = [];
+            for (let i = 0; i < tagFiltersArray.length; i++) {
+              const tag = tagFiltersArray[i];
+              const scope = tag.scope;
+              if (!scopeOfTag.includes(scope)) {
+                scopeOfTag.push(scope);
+              }
+            }
             
-            const ingredientValues = recipeDetails.ingredients.map(el => el.ingredient.toLowerCase());
+            const ingredientValues = [];
+            const ustensilsValues = [];
             const applianceValues = [recipeDetails.appliance.toLowerCase()];
-            const ustensilsValues = recipeDetails.ustensils.map(el => el.toLowerCase());
-            const filterElementsArray = Array.from(selectedFilterElements).map(tagDomElement => tagDomElement.dataset.identifier.split('-')[0]);
+            const filterElementsArray = [];
+
+            for (let i = 0; i < recipeDetails.ingredients.length; i++) {
+              const el = recipeDetails.ingredients[i];
+              ingredientValues.push(el.ingredient.toLowerCase());
+            }
+            for (let i = 0; i < recipeDetails.ustensils.length; i++) {
+              ustensilsValues.push(recipeDetails.ustensils[i].toLowerCase());
+            }
+            const selectedFilterElementsArray = Array.from(selectedFilterElements);
+
+            for (let i = 0; i < selectedFilterElementsArray.length; i++) {
+              const tagDomElement = selectedFilterElementsArray[i];
+              const identifier = tagDomElement.dataset.identifier;
+              const splitIdentifier = identifier.split('-');
+              const tag = splitIdentifier[0];
+              filterElementsArray.push(tag);
+            }
 
             if (scopeOfTag.includes('ingredients')) {
-              getDataForIngredientsFilter(ingredientValues.sort());
+              getDataForIngredientsFilter(sortArray(ingredientValues));
               handleClickOnFilterElement();
               handleDeleteFilterElement();
-              const filteredElementsTagArray = filterElementsArray.filter(ingredientTag => ingredientTag === 'ingredient');
-              const ingredientFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
-                {
-                  if (tagDomElement.dataset.identifier.split('-')[0] === 'ingredient') {
-                    return tagDomElement.dataset.item.split('-').join(' ')
+              const filteredElementsTagArray = [];
+              const ingredientFilterArray = [];
+
+              for (let i = 0; i < filterElementsArray.length; i++) {
+                const ingredientTag = filterElementsArray[i];
+                if (ingredientTag === 'ingredient') {
+                  filteredElementsTagArray.push(ingredientTag);
+                }
+              }
+              const selectedFilterElementsArray = Array.from(selectedFilterElements);
+
+              for (let i = 0; i < selectedFilterElementsArray.length; i++) {
+                const tagDomElement = selectedFilterElementsArray[i];
+                
+                if (tagDomElement.dataset.identifier.split('-')[0] === 'ingredient') {
+                  if (tagDomElement !== undefined) {
+                    ingredientFilterArray.push(tagDomElement.dataset.item.split('-').join(' '));
                   }
                 }
-              ).filter(el => el !== undefined);
+              }
 
               if (filteredElementsTagArray.length > 1) {
-                const totalFilterElementsMatch = ingredientValues.filter(
-                  tag => ingredientFilterArray.find(
-                    tag2 => tag === tag2
-                  )
-                );
+                const totalFilterElementsMatch = [];
+                for (let i = 0; i < ingredientValues.length; i++) {
+                  const tag = ingredientValues[i];
+                  for (let j = 0; j < ingredientFilterArray.length; j++) {
+                    const tag2 = ingredientFilterArray[j];
+                    if (tag === tag2) {
+                      totalFilterElementsMatch.push(tag);
+                      break;
+                    }
+                  }
+                }
                 if (totalFilterElementsMatch.length === ingredientFilterArray.length) {
                   return true;
                 }
                 return false;
               } else {
-                if (!requiredTags.some(tag => ingredientValues.includes(tag))) {
+                let foundTag = false;
+                for (let i = 0; i < requiredTags.length; i++) {
+                  const tag = requiredTags[i];
+                  if (ingredientValues.includes(tag)) {
+                    foundTag = true;
+                    break;
+                  }
+                }
+
+                if (!foundTag) {
                   return false;
                 }
               }
             }
             
             if (scopeOfTag.includes('appliance')) {
-              const filteredApplianceTagArray = filterElementsArray.filter(applianceTag => applianceTag === 'appliance');
-              const applianceFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
-                {
-                  if (tagDomElement.dataset.identifier.split('-')[0] === 'appliance') {
-                    return tagDomElement.dataset.item.split('-').join(' ')
+              const filteredApplianceTagArray = [];
+              const applianceFilterArray = [];
+              const selectedFilterElementsArray = Array.from(selectedFilterElements);
+
+              for (let i = 0; i < filterElementsArray.length; i++) {
+                const applianceTag = filterElementsArray[i];
+                if (applianceTag === 'appliance') {
+                  filteredApplianceTagArray.push(applianceTag);
+                }
+              }
+
+              for (let i = 0; i < selectedFilterElementsArray.length; i++) {
+                const tagDomElement = selectedFilterElementsArray[i];                
+                if (tagDomElement.dataset.identifier.split('-')[0] === 'appliance') {
+                  const item = tagDomElement.dataset.item.split('-').join(' ');
+                  if (item !== undefined) {
+                    applianceFilterArray.push(item);
                   }
                 }
-              ).filter(el => el !== undefined);
+              }
 
               if (filteredApplianceTagArray.length > 1) {
                 if (applianceFilterArray.length > 1) {
@@ -188,7 +314,16 @@ export function getIdOfRecipesSearchUtils(e) {
                 }
                 return false;
               } else {
-                if (!requiredTags.some(tag => applianceValues.includes(tag))) {
+                let foundTag = false;
+                for (let i = 0; i < requiredTags.length; i++) {
+                  const tag = requiredTags[i];
+                  if (applianceValues.includes(tag)) {
+                    foundTag = true;
+                    break;
+                  }
+                }
+
+                if (!foundTag) {
                   return false;
                 }
               }
@@ -196,30 +331,57 @@ export function getIdOfRecipesSearchUtils(e) {
             }
             
             if (scopeOfTag.includes('ustensils')) {
-              getDataForUstensilsFilter(ustensilsValues.sort());
+              getDataForUstensilsFilter(sortArray(ustensilsValues));
               handleClickOnFilterElement();
               handleDeleteFilterElement();
-              const filteredUstensilsTagArray = filterElementsArray.filter(ustensilsTag => ustensilsTag === 'ustensils');
-              const ustensilsFilterArray = Array.from(selectedFilterElements).map(tagDomElement => 
-                {
-                  if (tagDomElement.dataset.identifier.split('-')[0] === 'ustensils') {
-                    return tagDomElement.dataset.item.split('-').join(' ')
+              const filteredUstensilsTagArray = [];
+              const ustensilsFilterArray = [];
+              const selectedFilterElementsArray = Array.from(selectedFilterElements);
+
+              for (let i = 0; i < filterElementsArray.length; i++) {
+                const ustensilsTag = filterElementsArray[i];
+                if (ustensilsTag === 'ustensils') {
+                  filteredUstensilsTagArray.push(ustensilsTag);
+                }
+              }
+
+              for (let i = 0; i < selectedFilterElementsArray.length; i++) {
+                const tagDomElement = selectedFilterElementsArray[i];
+                if (tagDomElement.dataset.identifier.split('-')[0] === 'ustensils') {
+                  const item = tagDomElement.dataset.item.split('-').join(' ');
+                  if (item !== undefined) {
+                    ustensilsFilterArray.push(item);
                   }
                 }
-              ).filter(el => el !== undefined);
+              }
 
               if (filteredUstensilsTagArray.length > 1) {
-                const totalFilterElementsMatch = ustensilsValues.filter(
-                  tag => ustensilsFilterArray.find(
-                    tag2 => tag === tag2
-                  )
-                );
+                const totalFilterElementsMatch = [];
+                for (let i = 0; i < ustensilsValues.length; i++) {
+                  const tag = ustensilsValues[i];
+                  for (let j = 0; j < ustensilsFilterArray.length; j++) {
+                    const tag2 = ustensilsFilterArray[j];
+                    if (tag === tag2) {
+                      totalFilterElementsMatch.push(tag);
+                      break;
+                    }
+                  }
+                }
                 if (totalFilterElementsMatch.length === ustensilsFilterArray.length) {
                   return true;
                 }
                 return false;
               } else {
-                if (!requiredTags.some(tag => ustensilsValues.includes(tag))) {
+                let foundTag = false;
+                for (let i = 0; i < requiredTags.length; i++) {
+                  const tag = requiredTags[i];
+                  if (ustensilsValues.includes(tag)) {
+                    foundTag = true;
+                    break;
+                  }
+                }
+
+                if (!foundTag) {
                   return false;
                 }
               }
@@ -246,13 +408,13 @@ export function getIdOfRecipesSearchUtils(e) {
       return;
     }
 
-    window.mainSearchArr.forEach((el) => {
-      recipes.forEach((e) => {
-        if (e.id === el) {
-          getDomRecipes(e);
+    for (let i = 0; i < window.mainSearchArr.length; i++) {
+      for (let x = 0; x < recipes.length; x++) {
+        if (recipes[x].id === window.mainSearchArr[i]) {
+          getDomRecipes(recipes[x]);
         }
-      });
-    });
+      }
+    }
 
     // Display/hide the total of recipes found
     if (window.mainSearchArr.length <= 50) {
