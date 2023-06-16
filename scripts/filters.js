@@ -24,17 +24,16 @@ export function addInputIntoFilterOnOpen(e) {
 
 export function sanitizeIngredientsMap(param) {
   const ingredientsMap = new Map();
-  param?.forEach((tab) => {
-    tab.forEach(element => {
-      const elementLength = element.length;
-      const lastChar = element.charAt(elementLength - 1);
-      const elementWithoutPlurality = element.substring(0, elementLength - 1);
-      if (lastChar === 's' && tab.includes(elementWithoutPlurality)) {
-        return;
-      } else {
-        ingredientsMap.set({ id: element }, { ingredient: capitalizeText(element) });
-      }
-    })
+  const flatParam = param?.flat()
+  flatParam?.forEach((element) => {
+    const elementLength = element.length;
+    const lastChar = element.charAt(elementLength - 1);
+    const elementWithoutPlurality = element.substring(0, elementLength - 1);
+    if (lastChar === 's' && flatParam?.includes(elementWithoutPlurality)) {
+      return;
+    } else {
+      ingredientsMap.set({ id: element }, { ingredient: capitalizeText(element) });
+    }
   });
   return ingredientsMap;
 }
@@ -66,8 +65,9 @@ function filterRecipesByIngredients(searchFilter) {
 
     return Array.from(searchIngredient.values()).sort(Intl.Collator().compare);
   } else {
-    arrayOfIngredients.forEach((el) => {
-      filterIngredients.set(el, el);
+    const mapOfIngredientsSanitized = sanitizeIngredientsMap(arrayOfIngredients);
+    Array.from(mapOfIngredientsSanitized.values()).forEach((el) => {
+      filterIngredients.set(el.ingredient, el.ingredient);
     });
     return Array.from(filterIngredients.values()).sort(Intl.Collator().compare);
   }
