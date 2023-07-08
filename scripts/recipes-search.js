@@ -1,5 +1,6 @@
 import { recipes } from '../data/recipes.js';
 import { sanitizeIngredientsMap, findRecipesForTagSearch, getDataForIngredientsFilter, getDataForAppliancesFilter, getDataForUstensilsFilter, handleClickOnFilterElement, handleDeleteFilterElement } from './filters.js';
+import { capitalizeText } from './utils.js';
 
 function makeNamesMap() {
   const mapOfNames = new Map();
@@ -172,8 +173,13 @@ export function getIdOfRecipesSearchUtils(e) {
       } else {
         // Recherche avec plusieurs filtres.
         if (baseArray.size > 0) {
-          const arrayToCompare = sortArray(Array.from(baseArray.values()));
-          const filteredRecipes = arrayToCompare.filter(el => {
+          const arrayToCompare = Array.from(baseArray.values());
+          const filteredRecipes = [];
+
+          for (let i = 0; i < arrayToCompare.length; i++) {
+            const el = arrayToCompare[i];
+
+            // Get the recipes details
             let recipeDetails;
             for (let i = 0; i < recipes.length; i++) {
               const recipe = recipes[i];
@@ -183,44 +189,39 @@ export function getIdOfRecipesSearchUtils(e) {
               }
             }
 
-            const requiredTags = [];
-            const tagValues = [];
-
+            // Get the required tags selected by user
+            const requiredTags = new Set();
             for (let i = 0; i < tagFiltersArray.length; i++) {
               const tag = tagFiltersArray[i];
-              tagValues.push(tag.value);
+              requiredTags.add(tag.value);
             }
 
-            for (let i = 0; i < tagValues.length; i++) {
-              const value = tagValues[i];
-              if (!requiredTags.includes(value)) {
-                requiredTags.push(value);
-              }
-            }
 
-            const scopeOfTag = [];
+            // Get the scope of the tag (ingredient, appliance or ustensil)
+            let scopeOfTag = new Set();
             for (let i = 0; i < tagFiltersArray.length; i++) {
               const tag = tagFiltersArray[i];
-              const scope = tag.scope;
-              if (!scopeOfTag.includes(scope)) {
-                scopeOfTag.push(scope);
-              }
+              scopeOfTag.add(tag.scope);
             }
-            
-            const ingredientValues = [];
-            const ustensilsValues = [];
+
+
+            // Get all ingredients/appliance/ustensils values for the current recipe
+            let ingredientValues = [];
+            let ustensilsValues = [];
             const applianceValues = [recipeDetails.appliance.toLowerCase()];
-            const filterElementsArray = [];
-
             for (let i = 0; i < recipeDetails.ingredients.length; i++) {
               const el = recipeDetails.ingredients[i];
               ingredientValues.push(el.ingredient.toLowerCase());
             }
-            for (let i = 0; i < recipeDetails.ustensils.length; i++) {
-              ustensilsValues.push(recipeDetails.ustensils[i].toLowerCase());
-            }
-            const selectedFilterElementsArray = Array.from(selectedFilterElements);
 
+            for (let i = 0; i < recipeDetails.ustensils.length; i++) {
+              const el = recipeDetails.ustensils[i];
+              ustensilsValues.push(el.toLowerCase());
+            }
+            
+            // Get an array of all tag scope-identifier
+            const selectedFilterElementsArray = Array.from(selectedFilterElements);
+            let filterElementsArray = [];
             for (let i = 0; i < selectedFilterElementsArray.length; i++) {
               const tagDomElement = selectedFilterElementsArray[i];
               const identifier = tagDomElement.dataset.identifier;
@@ -229,12 +230,17 @@ export function getIdOfRecipesSearchUtils(e) {
               filterElementsArray.push(tag);
             }
 
-            if (scopeOfTag.includes('ingredients')) {
-              getDataForIngredientsFilter(sortArray(ingredientValues));
+            let shouldAddRecipe = true;
+
+            if (Array.from(scopeOfTag.values()).includes('ingredients')) {
+              getDataForIngredientsFilter(ingredientValues);
               handleClickOnFilterElement();
               handleDeleteFilterElement();
-              const filteredElementsTagArray = [];
-              const ingredientFilterArray = [];
+
+              // Get an array of the selected tags with the 'ingredient' scope
+              let filteredElementsTagArray = [];
+              // Get an array of the selected tags values with the 'ingredient' scope
+              let ingredientFilterArray = [];
 
               for (let i = 0; i < filterElementsArray.length; i++) {
                 const ingredientTag = filterElementsArray[i];
@@ -242,7 +248,6 @@ export function getIdOfRecipesSearchUtils(e) {
                   filteredElementsTagArray.push(ingredientTag);
                 }
               }
-              const selectedFilterElementsArray = Array.from(selectedFilterElements);
 
               for (let i = 0; i < selectedFilterElementsArray.length; i++) {
                 const tagDomElement = selectedFilterElementsArray[i];
@@ -266,27 +271,26 @@ export function getIdOfRecipesSearchUtils(e) {
                     }
                   }
                 }
-                if (totalFilterElementsMatch.length === ingredientFilterArray.length) {
-                  return true;
+                if (totalFilterElementsMatch.length !== ingredientFilterArray.length) {
+                  shouldAddRecipe = false;
                 }
-                return false;
-              } else {
-                let foundTag = false;
-                for (let i = 0; i < requiredTags.length; i++) {
-                  const tag = requiredTags[i];
+              } else {                  
+                const requiredTagsArr = Array.from(requiredTags.values());
+                let hasTag = [];
+                for (let i = 0; i < requiredTagsArr.length; i++) {
+                  const tag = requiredTagsArr[i];                  
                   if (ingredientValues.includes(tag)) {
-                    foundTag = true;
-                    break;
+                    hasTag.push(tag);
                   }
                 }
 
-                if (!foundTag) {
-                  return false;
+                if (!hasTag.length) {
+                  shouldAddRecipe = false;
                 }
               }
             }
-            
-            if (scopeOfTag.includes('appliance')) {
+
+            if (Array.from(scopeOfTag.values()).includes('appliance')) {
               const filteredApplianceTagArray = [];
               const applianceFilterArray = [];
               const selectedFilterElementsArray = Array.from(selectedFilterElements);
@@ -312,28 +316,28 @@ export function getIdOfRecipesSearchUtils(e) {
                 if (applianceFilterArray.length > 1) {
                   console.error('Too much appliance tags');
                 }
-                return false;
+                shouldAddRecipe = false;
               } else {
-                let foundTag = false;
-                for (let i = 0; i < requiredTags.length; i++) {
-                  const tag = requiredTags[i];
+                const requiredTagsArr = Array.from(requiredTags.values());
+                let hasTag = [];
+                for (let i = 0; i < requiredTagsArr.length; i++) {
+                  const tag = requiredTagsArr[i];
                   if (applianceValues.includes(tag)) {
-                    foundTag = true;
-                    break;
+                    hasTag.push(tag);
                   }
                 }
 
-                if (!foundTag) {
-                  return false;
+                if (!hasTag.length) {
+                  shouldAddRecipe = false;
                 }
               }
-
             }
-            
-            if (scopeOfTag.includes('ustensils')) {
-              getDataForUstensilsFilter(sortArray(ustensilsValues));
+
+            if (Array.from(scopeOfTag.values()).includes('ustensils')) {
+              getDataForUstensilsFilter(ustensilsValues);
               handleClickOnFilterElement();
               handleDeleteFilterElement();
+
               const filteredUstensilsTagArray = [];
               const ustensilsFilterArray = [];
               const selectedFilterElementsArray = Array.from(selectedFilterElements);
@@ -367,28 +371,29 @@ export function getIdOfRecipesSearchUtils(e) {
                     }
                   }
                 }
-                if (totalFilterElementsMatch.length === ustensilsFilterArray.length) {
-                  return true;
+                if (totalFilterElementsMatch.length !== ustensilsFilterArray.length) {
+                  shouldAddRecipe = false;
                 }
-                return false;
               } else {
-                let foundTag = false;
-                for (let i = 0; i < requiredTags.length; i++) {
-                  const tag = requiredTags[i];
+                const requiredTagsArr = Array.from(requiredTags.values());
+                let hasTag = [];
+                for (let i = 0; i < requiredTagsArr.length; i++) {
+                  const tag = requiredTagsArr[i];                  
                   if (ustensilsValues.includes(tag)) {
-                    foundTag = true;
-                    break;
+                    hasTag.push(tag);
                   }
                 }
 
-                if (!foundTag) {
-                  return false;
+                if (!hasTag.length) {
+                  shouldAddRecipe = false;
                 }
               }
             }
-            
-            return true;
-          });
+
+            if (shouldAddRecipe) {
+              filteredRecipes.push(el);
+            }
+          }
 
           window.mainSearchArr = filteredRecipes;
         }
@@ -432,6 +437,18 @@ export function getIdOfRecipesSearchUtils(e) {
 }
 
 function getDomRecipes(element) {
+  function getRecipeDetails() {
+    let string = '';
+    for (let i = 0; i < element.ingredients.length; i++) {
+      const item = (element.ingredients[i]);
+      string += `<div class="card-text"><span class="fw-semibold">${capitalizeText(item.ingredient)} :</span> 
+        ${item.quantity ? item.quantity : ''}
+        ${item.unit ? (item.unit.length > 2 ? item.unit : ` ${item.unit}`) : ''}
+      </div>`
+    }
+    return string;
+  }
+
   const dom = `
   <div class="col-md card-item-flex">
     <div class="card" data-show="recipe#${element.id}">
@@ -449,13 +466,7 @@ function getDomRecipes(element) {
         </h5>
         <div class="d-flex align-items-start justify-content-between gap-3 recipe-content-container">
           <div class="d-flex flex-column w-50 ingredients-container">
-            ${element.ingredients
-              .map((item) => {
-                return `<div class="card-text"><span class="fw-semibold">${item.ingredient} :</span> 
-              ${item.quantity ? item.quantity : ''}
-              ${item.unit ? (item.unit.length > 2 ? item.unit : ` ${item.unit}`) : ''}</div>`;
-              })
-              .join('')}
+            ${getRecipeDetails()}
           </div>
           <div class="card-text card-text-custom w-50">${element.description}</div>
         </div>
@@ -498,6 +509,15 @@ function getRecipeDetails(recipeId) {
 
 function getRecipeModalDom(recipe) {
   const desc = recipe.description.split('. ');
+  function getDescDetails() {
+    let string = '';
+    for (let i = 0; i < desc.length; i++) {
+      const el = (desc[i]);
+      string += `<li>${el}.</li>`
+    }
+    return string;
+  }
+
   const dom = `
     <div class="modal-dialog modal-xl w-100-md">
       <div class="modal-content h-100">
@@ -519,7 +539,7 @@ function getRecipeModalDom(recipe) {
           </span>
         </div>
         <ol>
-          ${desc.map((el) => `<li>${el}.</li>`).join('')}
+          ${getDescDetails()}
         </ol>
         </div>
         <div class="modal-footer">
