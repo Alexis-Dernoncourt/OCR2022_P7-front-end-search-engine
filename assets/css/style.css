@@ -116,6 +116,10 @@ body {
   cursor: pointer;
 }
 
+.notfound {
+  cursor: initial;
+}
+
 .card-item-container {
   overflow: hidden;
   text-overflow: ellipsis;

@@ -70,6 +70,7 @@ export function getIdOfRecipesSearchUtils(e) {
   let baseArray = [];
   let testArr = [];
 
+  // Filter the recipes if there's no value into the main search input and the user selected some tag
   if(!mainSearchInput?.value && !e.target?.value) {
     if (tagFiltersArray.length > 0) {
       let filteredRecipesIds = [];
@@ -91,6 +92,7 @@ export function getIdOfRecipesSearchUtils(e) {
     !e.target.value
     ) {
       
+    // Always display all the recipes to the user if there's no tag selected and no search value
     if (tagFiltersArray.length <= 0 && (!byNames && !byDesc && !byIngr)) {
       let recipesArray = [];
       for (let r = 0; r < recipes.length; r++) {
@@ -108,12 +110,14 @@ export function getIdOfRecipesSearchUtils(e) {
       byDesc = mainFilterRecipesByDescriptions(mainSearchInput?.value);
       byIngr = mainFilterRecipesByIngredients(mainSearchInput?.value);
     }
-      
+    
+    // No teg selected but value entered into main serach input
     if (tagFiltersArray.length <= 0 && byNames && byDesc && byIngr) {
       baseArray = new Set(sortArray([...byNames, ...byDesc, ...byIngr]));
       window.mainSearchArr = Array.from(baseArray.values());
     }
 
+    // If there is one or more tag selected by user
     if (tagFiltersArray.length > 0) {
       if (byNames || byDesc || byIngr) {
         baseArray = new Set(sortArray([...byNames, ...byDesc, ...byIngr]));
@@ -131,6 +135,7 @@ export function getIdOfRecipesSearchUtils(e) {
         window.mainSearchArr = sortArray(testArr);
       }
 
+      // If there is only one tag selected
       if (selectedFilterElements.length === 1) {
         if (baseArray.size > 0) {
           for (let i = 0; i < Array.from(baseArray.values()).length; i++) {
@@ -171,11 +176,12 @@ export function getIdOfRecipesSearchUtils(e) {
           }
         }
       } else {
-        // Recherche avec plusieurs filtres.
+        // There is two or more tag selected
         if (baseArray.size > 0) {
           const arrayToCompare = Array.from(baseArray.values());
           const filteredRecipes = [];
 
+          // Main loop
           for (let i = 0; i < arrayToCompare.length; i++) {
             const el = arrayToCompare[i];
 
@@ -213,7 +219,6 @@ export function getIdOfRecipesSearchUtils(e) {
               const el = recipeDetails.ingredients[i];
               ingredientValues.push(el.ingredient.toLowerCase());
             }
-
             for (let i = 0; i < recipeDetails.ustensils.length; i++) {
               const el = recipeDetails.ustensils[i];
               ustensilsValues.push(el.toLowerCase());
@@ -230,8 +235,10 @@ export function getIdOfRecipesSearchUtils(e) {
               filterElementsArray.push(tag);
             }
 
+            // Main loop utility variable to capture the recipe that should be added
             let shouldAddRecipe = true;
 
+            // If scope = ingredients
             if (Array.from(scopeOfTag.values()).includes('ingredients')) {
               getDataForIngredientsFilter(ingredientValues);
               handleClickOnFilterElement();
@@ -242,13 +249,15 @@ export function getIdOfRecipesSearchUtils(e) {
               // Get an array of the selected tags values with the 'ingredient' scope
               let ingredientFilterArray = [];
 
+              // Get all the selected tags with the scope of 'ingredient'
               for (let i = 0; i < filterElementsArray.length; i++) {
                 const ingredientTag = filterElementsArray[i];
                 if (ingredientTag === 'ingredient') {
                   filteredElementsTagArray.push(ingredientTag);
                 }
               }
-
+              
+              // Get the value of all selected tags with the scope of 'ingredient'
               for (let i = 0; i < selectedFilterElementsArray.length; i++) {
                 const tagDomElement = selectedFilterElementsArray[i];
                 
@@ -259,6 +268,7 @@ export function getIdOfRecipesSearchUtils(e) {
                 }
               }
 
+              // If more of one 'ingredient' tag selected
               if (filteredElementsTagArray.length > 1) {
                 const totalFilterElementsMatch = [];
                 for (let i = 0; i < ingredientValues.length; i++) {
@@ -274,7 +284,7 @@ export function getIdOfRecipesSearchUtils(e) {
                 if (totalFilterElementsMatch.length !== ingredientFilterArray.length) {
                   shouldAddRecipe = false;
                 }
-              } else {                  
+              } else { // If there is only one 'ingredient' tag selected             
                 const requiredTagsArr = Array.from(requiredTags.values());
                 let hasTag = [];
                 for (let i = 0; i < requiredTagsArr.length; i++) {
@@ -290,11 +300,15 @@ export function getIdOfRecipesSearchUtils(e) {
               }
             }
 
+            // If scope = appliance
             if (Array.from(scopeOfTag.values()).includes('appliance')) {
-              const filteredApplianceTagArray = [];
-              const applianceFilterArray = [];
+              // Get an array of the selected tags with the 'appliance' scope
+              let filteredApplianceTagArray = [];
+              // Get an array of the selected tags values with the 'appliance' scope
+              let applianceFilterArray = [];
               const selectedFilterElementsArray = Array.from(selectedFilterElements);
 
+              // Get all the selected tags with the scope of 'appliance'
               for (let i = 0; i < filterElementsArray.length; i++) {
                 const applianceTag = filterElementsArray[i];
                 if (applianceTag === 'appliance') {
@@ -302,6 +316,7 @@ export function getIdOfRecipesSearchUtils(e) {
                 }
               }
 
+              // Get the value of all selected tags with the scope of 'appliance'
               for (let i = 0; i < selectedFilterElementsArray.length; i++) {
                 const tagDomElement = selectedFilterElementsArray[i];                
                 if (tagDomElement.dataset.identifier.split('-')[0] === 'appliance') {
@@ -312,12 +327,13 @@ export function getIdOfRecipesSearchUtils(e) {
                 }
               }
 
+              // If more of one 'appliance' tag selected
               if (filteredApplianceTagArray.length > 1) {
                 if (applianceFilterArray.length > 1) {
                   console.error('Too much appliance tags');
                 }
                 shouldAddRecipe = false;
-              } else {
+              } else { // If there is only one 'appliance' tag selected
                 const requiredTagsArr = Array.from(requiredTags.values());
                 let hasTag = [];
                 for (let i = 0; i < requiredTagsArr.length; i++) {
@@ -333,15 +349,19 @@ export function getIdOfRecipesSearchUtils(e) {
               }
             }
 
+            // If scope = ustensils
             if (Array.from(scopeOfTag.values()).includes('ustensils')) {
               getDataForUstensilsFilter(ustensilsValues);
               handleClickOnFilterElement();
               handleDeleteFilterElement();
 
-              const filteredUstensilsTagArray = [];
-              const ustensilsFilterArray = [];
+              // Get an array of the selected tags with the 'ustensils' scope
+              let filteredUstensilsTagArray = [];
+              // Get an array of the selected tags values with the 'ustensils' scope
+              let ustensilsFilterArray = [];
               const selectedFilterElementsArray = Array.from(selectedFilterElements);
 
+              // Get all the selected tags with the scope of 'ustensils'
               for (let i = 0; i < filterElementsArray.length; i++) {
                 const ustensilsTag = filterElementsArray[i];
                 if (ustensilsTag === 'ustensils') {
@@ -349,6 +369,7 @@ export function getIdOfRecipesSearchUtils(e) {
                 }
               }
 
+              // Get the value of all selected tags with the scope of 'ustensils'
               for (let i = 0; i < selectedFilterElementsArray.length; i++) {
                 const tagDomElement = selectedFilterElementsArray[i];
                 if (tagDomElement.dataset.identifier.split('-')[0] === 'ustensils') {
@@ -359,6 +380,7 @@ export function getIdOfRecipesSearchUtils(e) {
                 }
               }
 
+              // If more of one 'ustensils' tag selected
               if (filteredUstensilsTagArray.length > 1) {
                 const totalFilterElementsMatch = [];
                 for (let i = 0; i < ustensilsValues.length; i++) {
@@ -374,7 +396,7 @@ export function getIdOfRecipesSearchUtils(e) {
                 if (totalFilterElementsMatch.length !== ustensilsFilterArray.length) {
                   shouldAddRecipe = false;
                 }
-              } else {
+              } else { // If there is only one 'ustensils' tag selected
                 const requiredTagsArr = Array.from(requiredTags.values());
                 let hasTag = [];
                 for (let i = 0; i < requiredTagsArr.length; i++) {
@@ -390,29 +412,35 @@ export function getIdOfRecipesSearchUtils(e) {
               }
             }
 
+            // If a recipe match, push it into the array
             if (shouldAddRecipe) {
               filteredRecipes.push(el);
             }
           }
 
+          // Get all the recipes found into the main search array to display them
           window.mainSearchArr = filteredRecipes;
         }
       }
     };
 
+    // Display the total of recipes found
     const totalRecipesInfoExist = document.querySelector('#total-recipes-info');
     if (window.mainSearchArr?.length <= 50 || (e.target.type === 'search' && e.target?.value?.length >= 3)) {
       mainContainer.innerHTML = '';
     }
     
+    // Display error message
     if (window.mainSearchArr?.length === 0 || (e.target.type === 'search' && e.target?.value?.length < 3 && !tagFiltersArray)) {
       totalRecipesInfoExist?.remove();
       if (window.mainSearchArr?.length === 0) {
-        getNotFoundDom('Aucune recette ne correspond aux filtres que vous avez renseignés.');
+        const searchValue = document.querySelector('#searchFormControlInput');
+        getNotFoundDom(`Aucune recette ne contient "${searchValue.value}". Vous pouvez chercher "tarte aux pommes", "poisson", etc...`);
       }
       return;
     }
 
+    // Display recipes found
     for (let i = 0; i < window.mainSearchArr.length; i++) {
       for (let x = 0; x < recipes.length; x++) {
         if (recipes[x].id === window.mainSearchArr[i]) {
@@ -431,11 +459,11 @@ export function getIdOfRecipesSearchUtils(e) {
       mainContainer.before(totalRecipes);
     } else {
       totalRecipesInfoExist?.remove();
-      // getNotFoundDom();
     }
   }
 }
 
+// Utility function to create the dom of the card recipes
 function getDomRecipes(element) {
   function getRecipeDetails() {
     let string = '';
@@ -480,9 +508,9 @@ function getDomRecipes(element) {
 
 function getNotFoundDom(message = 'Votre recherche ne donne rien ?') {
   const dom = `
-  <div class="container col-md card-item-flex">
+  <div class="container col-md card-item-flex notfound">
     <p>${message}</p>
-    <p>Vérifiez votre recherche (entrez 3 caractères minimum) ou essayez d'utiliser les filtres !</p>
+    <p>Aide: entrez 3 caractères minimum ou essayez d'utiliser les filtres !</p>
   </div>
   `;
   const mainContainer = document.querySelector('#recipes-container');
@@ -491,22 +519,22 @@ function getNotFoundDom(message = 'Votre recherche ne donne rien ?') {
 
 export function getModalDomOfRecipeDetails(recipeId) {
   const detailsOfRecipe = getRecipeDetails(recipeId);
-  if (detailsOfRecipe === 'error') {
-    console.error('ouuupssss not found !!');
-  } else {
-    getRecipeModalDom(detailsOfRecipe);
-  }
+  getRecipeModalDom(detailsOfRecipe);
 }
 
+// Show the recipe details into modal
 function getRecipeDetails(recipeId) {
-  try {
-    return recipes.find((el) => el.id === parseInt(recipeId));
-  } catch (error) {
-    // Return: not found error
-    return 'error';
+  let recipeToShow = [];
+  for (let i = 0; i < recipes.length; i++) {
+    const res = recipes[i];
+    if (res.id === parseInt(recipeId)) {
+      recipeToShow.push(res);
+    }
   }
+  return recipeToShow[0];
 }
 
+// Utility function to create the dom for the recipe details modal
 function getRecipeModalDom(recipe) {
   const desc = recipe.description.split('. ');
   function getDescDetails() {
