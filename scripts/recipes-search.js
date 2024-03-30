@@ -422,6 +422,9 @@ export function getIdOfRecipesSearchUtils(e) {
           window.mainSearchArr = filteredRecipes;
         }
       }
+      if (mainSearchInput.value && !baseArray.size) {
+        window.mainSearchArr = [];
+      }
     };
 
     // Display the total of recipes found
