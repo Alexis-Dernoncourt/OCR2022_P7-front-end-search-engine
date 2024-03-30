@@ -116,7 +116,7 @@ export function getIdOfRecipesSearchUtils(e) {
             })
             window.mainSearchArr = testArr;
           });
-          window.mainSearchArr.forEach(element => {
+          window.mainSearchArr?.forEach(element => {
             const recipeDetails = recipes.find(recipe => recipe.id === element);
             const ingredientValues = recipeDetails.ingredients.map(el => el.ingredient.toLowerCase());
             const applianceValues = [recipeDetails.appliance.toLowerCase()];
@@ -230,6 +230,10 @@ export function getIdOfRecipesSearchUtils(e) {
 
           window.mainSearchArr = filteredRecipes;
         }
+      }
+      
+      if (mainSearchInput.value && !baseArray.size) {
+        window.mainSearchArr = [];
       }
     };
 
