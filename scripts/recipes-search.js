@@ -1,4 +1,4 @@
-import { recipes } from '../data/recipes.js';
+import { recipes } from '../data/recipes_v2.0.js';
 import { sanitizeIngredientsMap, findRecipesForTagSearch, getDataForIngredientsFilter, getDataForAppliancesFilter, getDataForUstensilsFilter, handleClickOnFilterElement, handleDeleteFilterElement } from './filters.js';
 
 function makeNamesMap() {
@@ -277,7 +277,7 @@ function getDomRecipes(element) {
   const dom = `
   <div class="col-md card-item-flex">
     <div class="card" data-show="recipe#${element.id}">
-      <img src="assets/images/food-img.jpg" class="card-img-top" alt="..."/>
+      <img src="assets/images/recipes_images/${element.image}" class="card-img-top" alt="${element.name} recette" loading="lazy"/>
       <div class="card-body card-item-container">
         <h5 class="card-title d-flex align-items-start justify-content-between fs-5 mb-1">
           ${element.name}
@@ -345,7 +345,7 @@ function getRecipeModalDom(recipe) {
       <div class="modal-content h-100">
         <div class="modal-header">
           <div class="modal-image-head-container">
-            <img src="assets/images/food-img.jpg" alt="" class="modal-head-img" />
+            <img src="assets/images/recipes_images/${recipe.image}" class="modal-head-img" alt="${recipe.name} recette" />
             <h5 class="modal-title" id="staticBackdropLabel">${recipe.name}</h5>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="staticBackdrop" aria-label="Fermer" data-close="recipe-modal"></button>
